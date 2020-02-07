@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Fuel.iml" filepath="$PROJECT_DIR$/Fuel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chemlabfuel/chemlabfuel.iml" filepath="$PROJECT_DIR$/chemlabfuel/chemlabfuel.iml" />
+    </modules>
+  </component>
+</project>
