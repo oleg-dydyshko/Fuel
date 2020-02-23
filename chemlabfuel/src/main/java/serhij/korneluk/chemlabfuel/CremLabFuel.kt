@@ -38,14 +38,14 @@ import java.math.BigDecimal
 import java.util.*
 
 class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickListener, DialogContextMenuListener, DialogDeliteConfirmlistiner, DialogDataListiner, ListUpdateListiner, OnChildClickListener, UpdateJurnal, DialogContextMenuReaktListener {
-    private val inventarnySpisok = ArrayList<String>()
-    private lateinit var arrayAdapter: ArrayAdapter<String>
+    private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
+    private lateinit var arrayAdapter: ListAdapter
     private lateinit var arrayAdapter2: ListAdapterReakt
     private var edit: DialodOpisanieEdit? = null
     private var editReakt: DialodOpisanieEditReakt? = null
     private var rasxod: DialodReaktRasxod? = null
     private var jurnal: DialogJurnal? = null
-    private var userEdit: String = ""
+    private var userEdit = ""
     private lateinit var mAuth: FirebaseAuth
     private val spisokGroup = ArrayList<ReaktiveSpisok>()
     private val edIzmerenia = arrayOf("кг.", "мг.", "л.", "мл.")
@@ -162,9 +162,9 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
             var zero = ""
             var zero2 = ""
             var editedString = ""
-            if (InventorySpisok[position].editedBy != "") {
-                val edited = InventorySpisok[position].editedAt
-                val editedBy = InventorySpisok[position].editedBy
+            if (inventarnySpisok[position].editedBy != "") {
+                val edited = inventarnySpisok[position].editedAt
+                val editedBy = inventarnySpisok[position].editedBy
                 for (i in users.indices) {
                     if (users[i][0].contains(editedBy ?: "")) {
                         fn = users[i][1]
@@ -178,7 +178,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                 if (c[Calendar.MONTH] < 9) zero2 = "0"
                 editedString = " Изменено " + zero + c[Calendar.DATE] + "." + zero2 + (c[Calendar.MONTH] + 1) + "." + c[Calendar.YEAR] + " " + fn + " " + ln
             }
-            val createBy = InventorySpisok[position].createdBy
+            val createBy = inventarnySpisok[position].createdBy
             for (i in users.indices) {
                 if (users[i][0].contains(createBy ?: "")) {
                     fnG = users[i][1]
@@ -186,17 +186,17 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                     break
                 }
             }
-            val data02 = InventorySpisok[position].data02
-            val builder = "<strong>Марка, тип</strong><br>" + InventorySpisok[position].data03 + "<br><br>" +
-                    "<strong>Заводской номер (инв. номер)</strong><br>" + InventorySpisok[position].data04 + "<br><br>" +
-                    "<strong>Год выпуска (ввода в эксплуатацию)</strong><br>" + InventorySpisok[position].data05 + "<br><br>" +
-                    "<strong>Периодичность метролог. аттестации, поверки, калибровки, мес.</strong><br>" + InventorySpisok[position].data06 + "<br><br>" +
-                    "<strong>Дата последней аттестации, поверки, калибровки</strong><br>" + InventorySpisok[position].data07 + "<br><br>" +
-                    "<strong>Дата следующей аттестации, поверки, калибровки</strong><br>" + InventorySpisok[position].data08 + "<br><br>" +
-                    "<strong>Дата консервации</strong><br>" + InventorySpisok[position].data09 + "<br><br>" +
-                    "<strong>Дата расконсервации</strong><br>" + InventorySpisok[position].data10 + "<br><br>" +
+            val data02 = inventarnySpisok[position].data02
+            val builder = "<strong>Марка, тип</strong><br>" + inventarnySpisok[position].data03 + "<br><br>" +
+                    "<strong>Заводской номер (инв. номер)</strong><br>" + inventarnySpisok[position].data04 + "<br><br>" +
+                    "<strong>Год выпуска (ввода в эксплуатацию)</strong><br>" + inventarnySpisok[position].data05 + "<br><br>" +
+                    "<strong>Периодичность метролог. аттестации, поверки, калибровки, мес.</strong><br>" + inventarnySpisok[position].data06 + "<br><br>" +
+                    "<strong>Дата последней аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data07 + "<br><br>" +
+                    "<strong>Дата следующей аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data08 + "<br><br>" +
+                    "<strong>Дата консервации</strong><br>" + inventarnySpisok[position].data09 + "<br><br>" +
+                    "<strong>Дата расконсервации</strong><br>" + inventarnySpisok[position].data10 + "<br><br>" +
                     "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" +
-                    "<strong>Примечания</strong><br>" + InventorySpisok[position].data12 + editedString
+                    "<strong>Примечания</strong><br>" + inventarnySpisok[position].data12 + editedString
             val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
             opisanie.show(supportFragmentManager, "opisanie")
         }
@@ -297,7 +297,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
     }
 
     override fun onItemLongClick(parent: AdapterView<*>?, view: View, position: Int, id: Long): Boolean {
-        val menu: DialogContextMenu = DialogContextMenu.getInstance(position, InventorySpisok[position].data02)
+        val menu: DialogContextMenu = DialogContextMenu.getInstance(position, inventarnySpisok[position].data02)
         menu.show(supportFragmentManager, "menu")
         return true
     }
@@ -312,7 +312,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
 
     override fun onDialogEditPosition(position: Int) {
         if (isNetworkAvailable(this)) {
-            edit = DialodOpisanieEdit.getInstance(userEdit, InventorySpisok[position].uid, InventorySpisok[position].data02, InventorySpisok[position].data03, InventorySpisok[position].data04, InventorySpisok[position].data05, InventorySpisok[position].data06, InventorySpisok[position].data07, InventorySpisok[position].data08, InventorySpisok[position].data09, InventorySpisok[position].data10, InventorySpisok[position].data12)
+            edit = DialodOpisanieEdit.getInstance(userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
             edit?.show(supportFragmentManager, "edit")
         } else {
             val internet = DialogNoInternet()
@@ -322,7 +322,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
 
     override fun onDialogDeliteClick(position: Int) {
         if (isNetworkAvailable(this)) {
-            val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(InventorySpisok[position].data02, -1, position)
+            val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(inventarnySpisok[position].data02, -1, position)
             confirm.show(supportFragmentManager, "confirm")
         } else {
             val internet = DialogNoInternet()
@@ -333,7 +333,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
     override fun deliteData(groupPosition: Int, position: Int) {
         val mDatabase = FirebaseDatabase.getInstance().reference
         if (groupPosition == -1) {
-            InventorySpisok[position].uid?.let { mDatabase.child("equipments").child(it).removeValue() }
+            inventarnySpisok[position].uid?.let { mDatabase.child("equipments").child(it).removeValue() }
         } else {
             val arrayList = seash(groupPosition, position)
             if (ReaktiveSpisok[arrayList[18].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()
@@ -384,7 +384,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
         val id = item.itemId
         if (id == R.id.add) {
             if (isNetworkAvailable(this)) {
-                edit = DialodOpisanieEdit.getInstance(userEdit, InventorySpisok.size.toLong())
+                edit = DialodOpisanieEdit.getInstance(userEdit, inventarnySpisok.size.toLong())
                 edit?.show(supportFragmentManager, "edit")
                 editReakt = null
                 rasxod = null
@@ -415,17 +415,13 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
             if (item.isChecked) {
                 editor.putInt("sort", 0)
                 editor.apply()
-                Collections.sort(InventorySpisok, InventorySpisokSort(this))
-                Collections.sort(spisokGroup, ReaktiveSpisokSort(this))
+                inventarnySpisok.sort()
+                spisokGroup.sort()
             } else {
                 editor.putInt("sort", 1)
                 editor.apply()
-                Collections.sort(InventorySpisok, InventorySpisokSort(this))
-                Collections.sort(spisokGroup, ReaktiveSpisokSort(this))
-            }
-            inventarnySpisok.clear()
-            for (inventorySpisok in InventorySpisok) {
-                inventarnySpisok.add(inventorySpisok.data01.toString() + ". " + inventorySpisok.data02)
+                inventarnySpisok.sort()
+                spisokGroup.sort()
             }
             arrayAdapter.notifyDataSetChanged()
             arrayAdapter2.notifyDataSetChanged()
@@ -437,17 +433,13 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
             if (item.isChecked) {
                 editor.putInt("sort", 0)
                 editor.apply()
-                Collections.sort(InventorySpisok, InventorySpisokSort(this))
-                Collections.sort(spisokGroup, ReaktiveSpisokSort(this))
+                inventarnySpisok.sort()
+                spisokGroup.sort()
             } else {
                 editor.putInt("sort", 2)
                 editor.apply()
-                Collections.sort(InventorySpisok, InventorySpisokSort(this))
-                Collections.sort(spisokGroup, ReaktiveSpisokSort(this))
-            }
-            inventarnySpisok.clear()
-            for (inventorySpisok in InventorySpisok) {
-                inventarnySpisok.add(inventorySpisok.data01.toString() + ". " + inventorySpisok.data02)
+                inventarnySpisok.sort()
+                spisokGroup.sort()
             }
             arrayAdapter.notifyDataSetChanged()
             arrayAdapter2.notifyDataSetChanged()
@@ -463,10 +455,11 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
         loading.visibility = View.VISIBLE
         invalidateOptionsMenu()
         if (isNetworkAvailable(this)) {
+            val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
             val mDatabase = FirebaseDatabase.getInstance().reference
             mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    InventorySpisok.clear()
+                    inventarnySpisok.clear()
                     for (data in dataSnapshot.children) {
                         if (data.value is HashMap<*, *>) {
                             val hashMap = data.value as HashMap<*, *>
@@ -475,15 +468,11 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                                 var editedBy = hashMap["editedBy"]
                                 if (hashMap["editedAt"] == null) editedAt = 0L
                                 if (hashMap["editedBy"] == null) editedBy = ""
-                                InventorySpisok.add(InventorySpisok(hashMap["createdBy"] as String?, hashMap["data01"] as Long, hashMap["data02"] as String?, hashMap["data03"] as String?, hashMap["data04"] as String?, hashMap["data05"] as String?, hashMap["data06"] as String?, hashMap["data07"] as String?, hashMap["data08"] as String?, hashMap["data09"] as String?, hashMap["data10"] as String?, hashMap["data11"] as Long, hashMap["data12"] as String?, data.key, editedAt as Long, editedBy as String?))
+                                inventarnySpisok.add(InventorySpisok(this@CremLabFuel, hashMap["createdBy"] as String?, hashMap["data01"] as Long, hashMap["data02"] as String?, hashMap["data03"] as String?, hashMap["data04"] as String?, hashMap["data05"] as String?, hashMap["data06"] as String?, hashMap["data07"] as String?, hashMap["data08"] as String?, hashMap["data09"] as String?, hashMap["data10"] as String?, hashMap["data11"] as Long, hashMap["data12"] as String?, data.key, editedAt as Long, editedBy as String?))
                             }
                         }
                     }
-                    Collections.sort(InventorySpisok, InventorySpisokSort(this@CremLabFuel))
-                    inventarnySpisok.clear()
-                    for (inventorySpisok in InventorySpisok) {
-                        inventarnySpisok.add(inventorySpisok.data01.toString() + ". " + inventorySpisok.data02)
-                    }
+                    inventarnySpisok.sort()
                     arrayAdapter.notifyDataSetChanged()
                     loading.visibility = View.GONE
                     sendBroadcast(Intent(this@CremLabFuel, ReceiverSetAlarm::class.java))
@@ -498,7 +487,6 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                     val gson = Gson()
                     for (data in dataSnapshot.children) {
                         val name = data.child("name").value as String?
-                        //if (name == null) name = ""
                         val id = data.key?: ""
                         var ostatokSum = BigDecimal.ZERO
                         var minostatok = BigDecimal.ZERO
@@ -580,7 +568,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                                 }
                             }
                         }
-                        spisokGroup.add(ReaktiveSpisok(data05b, id.toInt(), name?: "", ostatokSum, minostatok, data08, spisokChild))
+                        spisokGroup.add(ReaktiveSpisok(this@CremLabFuel, data05b, id.toInt(), name?: "", ostatokSum, minostatok, data08, spisokChild))
                         ReaktiveSpisok[id.toInt()] = spisokN
                     }
                     if (intent.extras?.getBoolean("reaktive", false) == true) {
@@ -589,7 +577,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                             listView2.expandGroup(i)
                         }
                     }
-                    Collections.sort(spisokGroup, ReaktiveSpisokSort(this@CremLabFuel))
+                    spisokGroup.sort()
                     arrayAdapter2.notifyDataSetChanged()
                     loading.visibility = View.GONE
                     sendBroadcast(Intent(this@CremLabFuel, ReceiverSetAlarm::class.java))
@@ -618,7 +606,6 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                         }
                     }
                     val gson = Gson()
-                    val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
                     val editor = fuel.edit()
                     editor.putString("users", gson.toJson(users))
                     editor.apply()
@@ -632,10 +619,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
             if (g != "") {
                 val gson = Gson()
                 val type = object : TypeToken<Array<InventorySpisok?>?>() {}.type
-                InventorySpisok = gson.fromJson<ArrayList<InventorySpisok>>(g, type)
-                for (inventorySpisok in InventorySpisok) {
-                    inventarnySpisok.add(inventorySpisok.data01.toString() + ". " + inventorySpisok.data02)
-                }
+                inventarnySpisok = gson.fromJson<ArrayList<InventorySpisok>>(g, type)
                 val us = fuel.getString("users", "")
                 val type2 = object : TypeToken<ArrayList<ArrayList<String?>?>?>() {}.type
                 users.addAll(gson.fromJson<Collection<ArrayList<String>>>(us, type2))
@@ -650,7 +634,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
         }
     }
 
-    private inner class ListAdapter internal constructor() : ArrayAdapter<String>(this@CremLabFuel, R.layout.simple_list_item, inventarnySpisok as List<String>) {
+    private inner class ListAdapter internal constructor() : ArrayAdapter<InventorySpisok>(this@CremLabFuel, R.layout.simple_list_item, inventarnySpisok) {
         private val fuel: SharedPreferences = getSharedPreferences("fuel", Context.MODE_PRIVATE)
         override fun getView(position: Int, mView: View?, parent: ViewGroup): View {
             val root: View
@@ -670,12 +654,12 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
             val g = Calendar.getInstance() as GregorianCalendar
             val real = g.timeInMillis
             var dataLong = ""
-            val data8 = InventorySpisok[position].data08
+            val data8 = inventarnySpisok[position].data08
             if (data8 != null && data8 != "") {
                 val t1 = data8.split("-").toTypedArray()
                 val calendar = GregorianCalendar()
-                val data09 = InventorySpisok[position].data09
-                val data10 = InventorySpisok[position].data10
+                val data09 = inventarnySpisok[position].data09
+                val data10 = inventarnySpisok[position].data10
                 if (data09 != null && data09 != "") {
                     val t2 = data09.split("-").toTypedArray()
                     calendar[t2[0].toInt(), t2[1].toInt() - 1] = t2[2].toInt()
@@ -706,7 +690,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                     }
                 }
             }
-            viewHolder.text?.text = fromHtml(inventarnySpisok[position] + dataLong)
+            viewHolder.text?.text = fromHtml(inventarnySpisok[position].data01.toString() + ". " + inventarnySpisok[position].data02 + dataLong)
             viewHolder.text?.textSize = fuel.getInt("fontsize", 18).toFloat()
             return root
         }
@@ -886,7 +870,6 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
 
     companion object {
         val users = ArrayList<ArrayList<String>>()
-        var InventorySpisok: ArrayList<InventorySpisok> = ArrayList()
         val ReaktiveSpisok = LinkedHashMap<Int, LinkedHashMap<Int, LinkedHashMap<Int, String>>>()
 
         @Suppress("DEPRECATION")

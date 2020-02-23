@@ -16,6 +16,7 @@ import java.util.*
 class ReceiverSetAlarm : BroadcastReceiver() {
     private val testData = ArrayList<String>()
     private val reaktiveSpisok = ArrayList<ReaktiveSpisok>()
+    private val inventarnySpisok = ArrayList<InventorySpisok>()
     private var toDataAlarm = 45L
     override fun onReceive(context: Context, intent: Intent) {
         val fuel = context.getSharedPreferences("fuel", Context.MODE_PRIVATE)
@@ -35,8 +36,6 @@ class ReceiverSetAlarm : BroadcastReceiver() {
         if (FirebaseAuth.getInstance().currentUser != null) {
             if (CremLabFuel.isNetworkAvailable(context)) {
                 testData.clear()
-                //if (CremLabFuel.Companion.InventorySpisok == null) {
-                CremLabFuel.InventorySpisok = ArrayList()
                 mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         for (data in dataSnapshot.children) {
@@ -47,7 +46,7 @@ class ReceiverSetAlarm : BroadcastReceiver() {
                                     var editedBy = hashMap["editedBy"]
                                     if (hashMap["editedAt"] == null) editedAt = 0L
                                     if (hashMap["editedBy"] == null) editedBy = ""
-                                    CremLabFuel.InventorySpisok.add(InventorySpisok(hashMap["createdBy"] as String?, hashMap["data01"] as Long, hashMap["data02"] as String?, hashMap["data03"] as String?, hashMap["data04"] as String?, hashMap["data05"] as String?, hashMap["data06"] as String?, hashMap["data07"] as String?, hashMap["data08"] as String?, hashMap["data09"] as String?, hashMap["data10"] as String?, hashMap["data11"] as Long, hashMap["data12"] as String?, data.key, editedAt as Long, editedBy as String?))
+                                    inventarnySpisok.add(InventorySpisok(context, hashMap["createdBy"] as String?, hashMap["data01"] as Long, hashMap["data02"] as String?, hashMap["data03"] as String?, hashMap["data04"] as String?, hashMap["data05"] as String?, hashMap["data06"] as String?, hashMap["data07"] as String?, hashMap["data08"] as String?, hashMap["data09"] as String?, hashMap["data10"] as String?, hashMap["data11"] as Long, hashMap["data12"] as String?, data.key, editedAt as Long, editedBy as String?))
                                 }
                             }
                         }
@@ -56,14 +55,11 @@ class ReceiverSetAlarm : BroadcastReceiver() {
 
                     override fun onCancelled(databaseError: DatabaseError) {}
                 })
-                /*} else {
-                    checkAlarm(context)
-                }*/
                 mDatabase.child("reagents").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         reaktiveSpisok.clear()
                         for (data in dataSnapshot.children) {
-                            val id = data.key?: ""
+                            val id = data.key ?: ""
                             val g = Calendar.getInstance() as GregorianCalendar
                             val srokToDay = g.timeInMillis
                             var data05b: Long = 0
@@ -90,7 +86,7 @@ class ReceiverSetAlarm : BroadcastReceiver() {
                                     }
                                 }
                             }
-                            reaktiveSpisok.add(ReaktiveSpisok(data05b, id.toInt(), srok))
+                            reaktiveSpisok.add(ReaktiveSpisok(context, data05b, id.toInt(), srok))
                         }
                         checkAlarmReaktive(context)
                     }
@@ -133,7 +129,7 @@ class ReceiverSetAlarm : BroadcastReceiver() {
         val realtime = c.timeInMillis
         c[c[Calendar.YEAR], c[Calendar.MONTH], c[Calendar.DATE], 8, 0] = 0
         val time = c.timeInMillis
-        for (inventarny_spisok_datum in CremLabFuel.InventorySpisok) {
+        for (inventarny_spisok_datum in inventarnySpisok) {
             val data01 = inventarny_spisok_datum.data01.toInt()
             removeAlarm(context, data01)
             if (toDataAlarm != 0L) {
