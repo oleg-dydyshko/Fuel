@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Fuel.iml" filepath="$PROJECT_DIR$/Fuel.iml" />
-      <module fileurl="file://$PROJECT_DIR$/chemlabfuel/chemlabfuel.iml" filepath="$PROJECT_DIR$/chemlabfuel/chemlabfuel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Fuel.iml" filepath="$PROJECT_DIR$/Fuel.iml" group="Fuel" />
+      <module fileurl="file://$PROJECT_DIR$/chemlabfuel/chemlabfuel.iml" filepath="$PROJECT_DIR$/chemlabfuel/chemlabfuel.iml" group="Fuel/chemlabfuel" />
     </modules>
   </component>
 </project>
