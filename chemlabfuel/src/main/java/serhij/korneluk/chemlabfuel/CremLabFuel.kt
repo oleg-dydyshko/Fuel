@@ -670,7 +670,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                         val t3l = calendar.timeInMillis
                         if (t2l < t3l) {
                             g[t1[0].toInt(), t1[1].toInt() - 1] = t1[2].toInt()
-                            if (g.timeInMillis - real > 0L && g.timeInMillis - real < 45L * 24L * 60L * 60L * 1000L) {
+                            if (g.timeInMillis - real >= 0L && g.timeInMillis - real < 45L * 24L * 60L * 60L * 1000L) {
                                 val dat = g.timeInMillis - real
                                 g.timeInMillis = dat
                                 dataLong = "<br><font color=#9a2828>Осталось " + (g[Calendar.DAY_OF_YEAR] - 1) + " дней(-я)</font>"
@@ -681,7 +681,7 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                     }
                 } else {
                     g[t1[0].toInt(), t1[1].toInt() - 1] = t1[2].toInt()
-                    if (g.timeInMillis - real > 0L && g.timeInMillis - real < 45L * 24L * 60L * 60L * 1000L) {
+                    if (g.timeInMillis - real >= 0L && g.timeInMillis - real < 45L * 24L * 60L * 60L * 1000L) {
                         val dat = g.timeInMillis - real
                         g.timeInMillis = dat
                         dataLong = "<br><font color=#9a2828>Осталось " + (g[Calendar.DAY_OF_YEAR] - 1) + " дней(-я)</font>"
