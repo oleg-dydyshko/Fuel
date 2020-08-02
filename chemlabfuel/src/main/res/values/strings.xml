@@ -59,5 +59,6 @@
     <string name="gurnal_rasxoda">Журнал расхода</string>
     <string name="no_data">Нет даты</string>
     <string name="kol_na_ost">Количество на остатке</string>
+    <string name="login_password_error">Неверный логин или пароль</string>
     <!--%1$s is a string and %2$d is a decimal number-->
 </resources>

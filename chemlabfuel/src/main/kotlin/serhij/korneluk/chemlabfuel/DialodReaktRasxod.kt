@@ -15,11 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
@@ -157,18 +154,7 @@ class DialodReaktRasxod : DialogFragment() {
             listiner?.updateJurnalRasxoda(position, jur[position][0], jur[position][1], jur[position][2], jur[position][3], jur[position][4], jur[position][5])
         } else {
             activity?.let {
-                val layout = LinearLayout(it)
-                layout.setBackgroundResource(R.color.colorPrimary)
-                val toast = TextView(it)
-                toast.setTextColor(ContextCompat.getColor(it, R.color.colorIcons))
-                toast.setPadding(10, 10, 10, 10)
-                toast.setText(R.string.error)
-                toast.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-                layout.addView(toast)
-                val mes = Toast(it)
-                mes.duration = Toast.LENGTH_LONG
-                mes.view = layout
-                mes.show()
+                CremLabFuel.setToast(it, getString(R.string.error))
             }
         }
         dialog?.cancel()

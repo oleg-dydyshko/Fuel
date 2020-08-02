@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package serhij.korneluk.chemlabfuel
 
 import android.content.Context
@@ -20,6 +22,7 @@ import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.ExpandableListView.OnChildClickListener
 import android.widget.TabHost.TabSpec
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -896,6 +899,22 @@ class CremLabFuel : AppCompatActivity(), OnItemClickListener, OnItemLongClickLis
                 val activeNetworkInfo = connectivityManager.activeNetworkInfo ?: return false
                 return activeNetworkInfo.isConnectedOrConnecting
             }
+        }
+
+        @Suppress("DEPRECATION")
+        fun setToast(context: Context, message: String) {
+            val layout = LinearLayout(context)
+            layout.setBackgroundResource(R.color.colorPrimary)
+            val toast = TextView(context)
+            toast.setTextColor(ContextCompat.getColor(context, R.color.colorIcons))
+            toast.setPadding(10, 10, 10, 10)
+            toast.text = message
+            toast.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+            layout.addView(toast)
+            val mes = Toast(context)
+            mes.duration = Toast.LENGTH_LONG
+            mes.view = layout
+            mes.show()
         }
     }
 }

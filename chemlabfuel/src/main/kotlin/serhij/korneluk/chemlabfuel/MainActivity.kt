@@ -44,34 +44,12 @@ class MainActivity : AppCompatActivity() {
                         val user1 = mAuth.currentUser
                         updateUI(user1)
                     } else {
-                        val layout = LinearLayout(this)
-                        layout.setBackgroundResource(R.color.colorPrimary)
-                        val toast = TextView(this)
-                        toast.setTextColor(ContextCompat.getColor(this, R.color.colorIcons))
-                        toast.setPadding(10, 10, 10, 10)
-                        toast.text = "Неверный логин или пароль"
-                        toast.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-                        layout.addView(toast)
-                        val mes = Toast(this)
-                        mes.duration = Toast.LENGTH_LONG
-                        mes.view = layout
-                        mes.show()
+                        CremLabFuel.setToast(this, getString(R.string.login_password_error))
                         updateUI(null)
                     }
                 }
             } else {
-                val layout = LinearLayout(this)
-                layout.setBackgroundResource(R.color.colorPrimary)
-                val toast = TextView(this)
-                toast.setTextColor(ContextCompat.getColor(this, R.color.colorIcons))
-                toast.setPadding(10, 10, 10, 10)
-                toast.text = "Неверный логин или пароль"
-                toast.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-                layout.addView(toast)
-                val mes = Toast(this)
-                mes.duration = Toast.LENGTH_LONG
-                mes.view = layout
-                mes.show()
+                CremLabFuel.setToast(this, getString(R.string.login_password_error))
                 updateUI(null)
             }
         }
