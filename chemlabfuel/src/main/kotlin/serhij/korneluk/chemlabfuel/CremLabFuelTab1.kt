@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.cremlabfuel_tab1.*
 import java.util.*
 
-class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner, DialogContextMenu.DialogContextMenuListener {
 
     private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
     private lateinit var arrayAdapter: ListAdapter
@@ -86,11 +86,12 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         return super.onOptionsItemSelected(item)
     }
 
-    fun onDialogDeliteClick(position: Int) {
+    override fun onDialogDeliteClick(position: Int) {
         activity?.let { activity ->
             fragmentManager?.let {
                 if (CremLabFuel.isNetworkAvailable(activity)) {
                     val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(inventarnySpisok[position].data02, -1, position)
+                    confirm.setDialogDeliteConfirmlistiner(this)
                     confirm.show(it, "confirm")
                 } else {
                     val internet = DialogNoInternet()
@@ -100,7 +101,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         }
     }
 
-    fun onDialogEditPosition(position: Int) {
+    override fun onDialogEditPosition(position: Int) {
         activity?.let { activity ->
             fragmentManager?.let {
                 if (CremLabFuel.isNetworkAvailable(activity)) {
@@ -114,9 +115,12 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         }
     }
 
-    fun deliteData(position: Int) {
+    override fun deliteData(position: Int) {
         val mDatabase = FirebaseDatabase.getInstance().reference
         inventarnySpisok[position].uid?.let { mDatabase.child("equipments").child(it).removeValue() }
+    }
+
+    override fun deliteData(groupPosition: Int, position: Int) {
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -173,6 +177,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     override fun onItemLongClick(parent: AdapterView<*>?, view: View, position: Int, id: Long): Boolean {
         fragmentManager?.let {
             val menu: DialogContextMenu = DialogContextMenu.getInstance(position, inventarnySpisok[position].data02)
+            menu.setDialogContextMenuListener(this)
             menu.show(it, "menu")
         }
         return true

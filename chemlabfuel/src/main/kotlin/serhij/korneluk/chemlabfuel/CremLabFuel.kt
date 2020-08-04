@@ -8,9 +8,11 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
+import android.util.SparseArray
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -27,43 +30,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.cremlabfuel.*
-import serhij.korneluk.chemlabfuel.DialodOpisanieEditReakt.ListUpdateListiner
-import serhij.korneluk.chemlabfuel.DialodReaktRasxod.UpdateJurnal
-import serhij.korneluk.chemlabfuel.DialogContextMenu.DialogContextMenuListener
-import serhij.korneluk.chemlabfuel.DialogContextMenuReakt.DialogContextMenuReaktListener
 import serhij.korneluk.chemlabfuel.DialogData.DialogDataListiner
-import serhij.korneluk.chemlabfuel.DialogDeliteConfirm.DialogDeliteConfirmlistiner
 import java.util.*
 
-class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDeliteConfirmlistiner, DialogDataListiner, ListUpdateListiner, UpdateJurnal, DialogContextMenuReaktListener {
+class CremLabFuel : AppCompatActivity(), DialogDataListiner {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
-
-    override fun onDialogAddPartia(groupPosition: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.onDialogAddPartia(groupPosition)
-    }
-
-    override fun onDialogRashod(groupPosition: Int, childPosition: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.onDialogRashod(groupPosition, childPosition)
-    }
-
-    override fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.onDialogJurnal(groupPosition, childPosition)
-    }
-
-    override fun onDialogEdit(groupPosition: Int, childPosition: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.onDialogEdit(groupPosition, childPosition)
-    }
-
-    override fun onDialogRemove(groupPosition: Int, childPosition: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.onDialogRemove(groupPosition, childPosition)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,38 +84,8 @@ class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDelite
         overridePendingTransition(R.anim.alphain, R.anim.alphaout)
     }
 
-    override fun updateList() {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.updateList()
-    }
-
-    override fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-        page.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
-    }
-
-    override fun onDialogEditPosition(position: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(0) as CremLabFuelTab1
-        page.onDialogEditPosition(position)
-    }
-
-    override fun onDialogDeliteClick(position: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(0) as CremLabFuelTab1
-        page.onDialogDeliteClick(position)
-    }
-
-    override fun deliteData(groupPosition: Int, position: Int) {
-        if (groupPosition == -1) {
-            val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(0) as CremLabFuelTab1
-            page.deliteData(position)
-        } else {
-            val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
-            page.deliteData(groupPosition, position)
-        }
-    }
-
     override fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
-        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
+        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
         page.setData(textview, year, month, dayOfMonth)
     }
 
@@ -187,9 +130,9 @@ class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDelite
                 editor.putInt("sort", 1)
                 editor.apply()
             }
-            val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(0) as CremLabFuelTab1
+            val page = myTabPagerAdapter.getFragment(0) as CremLabFuelTab1
             page.updateSort()
-            val page2 = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
+            val page2 = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
             page2.updateSort()
         }
         if (id == R.id.sorttime) {
@@ -202,9 +145,9 @@ class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDelite
                 editor.putInt("sort", 2)
                 editor.apply()
             }
-            val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(0) as CremLabFuelTab1
+            val page = myTabPagerAdapter.getFragment(0) as CremLabFuelTab1
             page.updateSort()
-            val page2 = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
+            val page2 = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
             page2.updateSort()
         }
         return super.onOptionsItemSelected(item)
@@ -241,7 +184,7 @@ class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDelite
                     editor.apply()
                     if (intent.extras?.getBoolean("reaktive", false) == true) {
                         tabPager.currentItem = 1
-                        val page = (myTabPagerAdapter as MyFragmentStatePagerAdapter).getFragment(1) as CremLabFuelTab2
+                        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
                         page.setExpandGroup()
                     }
                     sendBroadcast(Intent(this@CremLabFuel, ReceiverSetAlarm::class.java))
@@ -255,7 +198,8 @@ class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDelite
         }
     }
 
-    private inner class MyTabPagerAdapter(fragmentManager: FragmentManager) : MyFragmentStatePagerAdapter(fragmentManager) {
+    private inner class MyTabPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        private val registeredFragments = SparseArray<Fragment>()
         override fun getCount(): Int {
             return 2
         }
@@ -277,6 +221,21 @@ class CremLabFuel : AppCompatActivity(), DialogContextMenuListener, DialogDelite
 
         override fun getItemPosition(ob: Any): Int {
             return PagerAdapter.POSITION_NONE
+        }
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            val fragment = super.instantiateItem(container, position) as Fragment
+            registeredFragments.put(position, fragment)
+            return fragment
+        }
+
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+            registeredFragments.remove(position)
+            super.destroyItem(container, position, `object`)
+        }
+
+        fun getFragment(key: Int) : Fragment {
+            return registeredFragments.get(key)
         }
     }
 

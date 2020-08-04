@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.cremlabfuel_tab2.*
 import java.math.BigDecimal
 import java.util.*
 
-class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
+class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, DialogContextMenuReakt.DialogContextMenuReaktListener, DialodOpisanieEditReakt.ListUpdateListiner, DialodReaktRasxod.UpdateJurnal, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
 
     private var edit: DialodOpisanieEdit? = null
     private var rasxod: DialodReaktRasxod? = null
@@ -47,6 +47,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
                     fragmentManager?.let {
                         val arrayList = seash(groupPosition, childPosition)
                         val reakt: DialogContextMenuReakt = DialogContextMenuReakt.getInstance(groupPosition, childPosition, CremLabFuel.ReaktiveSpisok[arrayList[14].toInt()]?.get(arrayList[15].toInt())?.get(13))
+                        reakt.setDialogContextMenuReaktListener(this)
                         reakt.show(it, "reakt")
                     }
                     return@setOnItemLongClickListener true
@@ -95,6 +96,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
                 fragmentManager?.let {
                     if (CremLabFuel.isNetworkAvailable(activity)) {
                         editReakt = DialodOpisanieEditReakt.getInstance(CremLabFuel.userEdit, "", "", 0)
+                        editReakt?.setListUpdateListiner(this)
                         editReakt?.show(it, "edit")
                         edit = null
                         rasxod = null
@@ -108,15 +110,19 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    fun deliteData(groupPosition: Int, position: Int) {
+    override fun deliteData(position: Int) {
+    }
+
+    override fun deliteData(groupPosition: Int, position: Int) {
         val mDatabase = FirebaseDatabase.getInstance().reference
         val arrayList = seash(groupPosition, position)
         if (CremLabFuel.ReaktiveSpisok[arrayList[18].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()
     }
 
-    fun onDialogAddPartia(groupPosition: Int) {
+    override fun onDialogAddPartia(groupPosition: Int) {
         fragmentManager?.let {
             editReakt = DialodOpisanieEditReakt.getInstance(CremLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia)
+            editReakt?.setListUpdateListiner(this)
             editReakt?.show(it, "edit")
             edit = null
             rasxod = null
@@ -124,10 +130,11 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
         }
     }
 
-    fun onDialogRashod(groupPosition: Int, childPosition: Int) {
+    override fun onDialogRashod(groupPosition: Int, childPosition: Int) {
         fragmentManager?.let {
             val arrayList = seash(groupPosition, childPosition)
             rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), CremLabFuel.userEdit)
+            rasxod?.setUpdateJurnal(this)
             rasxod?.show(it, "rasxod")
             edit = null
             editReakt = null
@@ -135,7 +142,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
         }
     }
 
-    fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
+    override fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
         fragmentManager?.let {
             val arrayList = seash(groupPosition, childPosition)
             jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], CremLabFuel.userEdit)
@@ -146,14 +153,26 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
         }
     }
 
-    fun onDialogEdit(groupPosition: Int, childPosition: Int) {
+    override fun onDialogEdit(groupPosition: Int, childPosition: Int) {
         fragmentManager?.let {
             val arrayList = seash(groupPosition, childPosition)
             editReakt = DialodOpisanieEditReakt.getInstance(CremLabFuel.userEdit, arrayList[14].toInt(), arrayList[15].toInt())
+            editReakt?.setListUpdateListiner(this)
             editReakt?.show(it, "edit")
             edit = null
             rasxod = null
             jurnal = null
+        }
+    }
+
+    override fun onDialogRemove(groupPosition: Int, childPosition: Int) {
+        fragmentManager?.let {
+            var spisokGroupSt = spisokGroup[groupPosition].arrayList?.get(childPosition) ?: ""
+            val t1 = spisokGroupSt.indexOf(" <")
+            if (t1 != -1) spisokGroupSt = spisokGroupSt.substring(0, t1)
+            val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(spisokGroup[groupPosition].string + " " + spisokGroupSt, groupPosition, childPosition)
+            confirm.setDialogDeliteConfirmlistiner(this)
+            confirm.show(it, "confirm")
         }
     }
 
@@ -163,7 +182,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
         rasxod?.setData(textview, year, month, dayOfMonth)
     }
 
-    fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
+    override fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
         if (jurnal != null) jurnal?.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
     }
 
@@ -207,17 +226,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
         return arrayList
     }
 
-    fun onDialogRemove(groupPosition: Int, childPosition: Int) {
-        fragmentManager?.let {
-            var spisokGroupSt = spisokGroup[groupPosition].arrayList?.get(childPosition) ?: ""
-            val t1 = spisokGroupSt.indexOf(" <")
-            if (t1 != -1) spisokGroupSt = spisokGroupSt.substring(0, t1)
-            val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(spisokGroup[groupPosition].string + " " + spisokGroupSt, groupPosition, childPosition)
-            confirm.show(it, "confirm")
-        }
-    }
-
-    fun updateList() {
+    override fun updateList() {
         arrayAdapter2.notifyDataSetChanged()
     }
 
@@ -491,6 +500,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
                 fragmentManager?.let {
                     if (menuItem.itemId == R.id.menu_add) {
                         editReakt = DialodOpisanieEditReakt.getInstance(CremLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia)
+                        editReakt?.setListUpdateListiner(this@CremLabFuelTab2)
                         editReakt?.show(it, "edit")
                         edit = null
                         rasxod = null
@@ -500,6 +510,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
                     if (menuItem.itemId == R.id.menu_minus) {
                         val arrayList = seash(groupPosition, childposition)
                         rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), CremLabFuel.userEdit)
+                        rasxod?.setUpdateJurnal(this@CremLabFuelTab2)
                         rasxod?.show(it, "rasxod")
                         edit = null
                         editReakt = null
@@ -516,6 +527,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
                     if (menuItem.itemId == R.id.menu_redoktor) {
                         val arrayList = seash(groupPosition, childposition)
                         editReakt = DialodOpisanieEditReakt.getInstance(CremLabFuel.userEdit, arrayList[14].toInt(), arrayList[15].toInt())
+                        editReakt?.setListUpdateListiner(this@CremLabFuelTab2)
                         editReakt?.show(it, "edit")
                         edit = null
                         rasxod = null
@@ -528,6 +540,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener {
                         val t1 = spisokGroupSt.indexOf(" <")
                         if (t1 != -1) spisokGroupSt = spisokGroupSt.substring(0, t1)
                         val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(spisokGroup[groupPosition].string + " " + spisokGroupSt, groupPosition, childposition)
+                        confirm.setDialogDeliteConfirmlistiner(this@CremLabFuelTab2)
                         confirm.show(it, "confirm")
                         return@setOnMenuItemClickListener true
                     }

@@ -1,9 +1,7 @@
 package serhij.korneluk.chemlabfuel
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
@@ -44,7 +42,11 @@ class DialodReaktRasxod : DialogFragment() {
         fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String)
     }
 
-    override fun onAttach(context: Context) {
+    internal fun setUpdateJurnal(listiner: UpdateJurnal) {
+        this.listiner = listiner
+    }
+
+    /*override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity) {
             listiner = try {
@@ -53,7 +55,7 @@ class DialodReaktRasxod : DialogFragment() {
                 throw ClassCastException("$context must implement UpdateJurnal")
             }
         }
-    }
+    }*/
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,7 +1,6 @@
 package serhij.korneluk.chemlabfuel
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -40,7 +39,11 @@ class DialodOpisanieEditReakt : DialogFragment() {
         fun updateList()
     }
 
-    override fun onAttach(context: Context) {
+    internal fun setListUpdateListiner(listiner: ListUpdateListiner) {
+        this.listiner = listiner
+    }
+
+    /*override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity) {
             listiner = try {
@@ -49,7 +52,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                 throw ClassCastException("$context must implement ListUpdateListiner")
             }
         }
-    }
+    }*/
 
     fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
         var zero = ""

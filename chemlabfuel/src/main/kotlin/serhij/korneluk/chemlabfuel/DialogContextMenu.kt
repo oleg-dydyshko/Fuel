@@ -1,8 +1,6 @@
 package serhij.korneluk.chemlabfuel
 
-import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -13,15 +11,19 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 
 class DialogContextMenu : DialogFragment() {
-    private lateinit var alert:AlertDialog
-    
+    private lateinit var alert: AlertDialog
+    private var mListener: DialogContextMenuListener? = null
+
     internal interface DialogContextMenuListener {
         fun onDialogEditPosition(position: Int)
         fun onDialogDeliteClick(position: Int)
     }
 
-    private var mListener: DialogContextMenuListener? = null
-    override fun onAttach(context: Context) {
+    internal fun setDialogContextMenuListener(mListener: DialogContextMenuListener) {
+        this.mListener = mListener
+    }
+
+    /*override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity) {
             mListener = try {
@@ -30,7 +32,7 @@ class DialogContextMenu : DialogFragment() {
                 throw ClassCastException("$context must implement DialogContextMenuListener")
             }
         }
-    }
+    }*/
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let {
