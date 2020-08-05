@@ -21,6 +21,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
 
     private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
     private lateinit var arrayAdapter: ListAdapter
+    private var edit: DialodOpisanieEdit? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.cremlabfuel_tab1, container, false)
@@ -40,6 +41,10 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
+        edit?.setData(textview, year, month, dayOfMonth)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -74,8 +79,8 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                 val id = item.itemId
                 if (id == R.id.add) {
                     if (CremLabFuel.isNetworkAvailable(activity)) {
-                        val edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok.size.toLong())
-                        edit.show(it, "edit")
+                        edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok.size.toLong())
+                        edit?.show(it, "edit")
                     } else {
                         val internet = DialogNoInternet()
                         internet.show(it, "internet")
@@ -105,8 +110,8 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         activity?.let { activity ->
             fragmentManager?.let {
                 if (CremLabFuel.isNetworkAvailable(activity)) {
-                    val edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
-                    edit.show(it, "edit")
+                    edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
+                    edit?.show(it, "edit")
                 } else {
                     val internet = DialogNoInternet()
                     internet.show(it, "internet")
@@ -115,12 +120,9 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         }
     }
 
-    override fun deliteData(position: Int) {
+    override fun deliteData(position: Int, groupPosition: Int) {
         val mDatabase = FirebaseDatabase.getInstance().reference
         inventarnySpisok[position].uid?.let { mDatabase.child("equipments").child(it).removeValue() }
-    }
-
-    override fun deliteData(groupPosition: Int, position: Int) {
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {

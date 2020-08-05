@@ -20,9 +20,10 @@ class DialogData : DialogFragment() {
     private lateinit var builder: AlertDialog.Builder
     private var listiner: DialogDataListiner? = null
     private lateinit var rootView: View
+    private var fragment = 1
 
     internal interface DialogDataListiner {
-        fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int)
+        fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int, fragment: Int)
     }
 
     override fun onAttach(context: Context) {
@@ -40,6 +41,7 @@ class DialogData : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         title.text = arguments?.getString("title") ?: ""
         calendarView.date = arguments?.getLong("data") ?: 0L
+        fragment = arguments?.getInt("fragment") ?: 1
         today.setOnClickListener {
             val c = Calendar.getInstance() as GregorianCalendar
             calendarView.date = c.timeInMillis
@@ -58,7 +60,7 @@ class DialogData : DialogFragment() {
         }
         val textview = arguments?.getInt("textview") ?: 0
         calendarView.setOnDateChangeListener { _: CalendarView?, year: Int, month: Int, dayOfMonth: Int ->
-            listiner?.setData(textview, year, month, dayOfMonth)
+            listiner?.setData(textview, year, month, dayOfMonth, fragment)
             dialog?.cancel()
         }
     }
@@ -75,7 +77,7 @@ class DialogData : DialogFragment() {
             val textview = arguments?.getInt("textview") ?: 0
             if (textview == 7 || textview == 9 || textview == 10) {
                 builder.setNeutralButton("Удалить дату") { _: DialogInterface?, _: Int ->
-                    listiner?.setData(arguments?.getInt("textview") ?: 0, 0, 0, 0)
+                    listiner?.setData(arguments?.getInt("textview") ?: 0, 0, 0, 0, fragment)
                 }
                 builder.setPositiveButton("Отмена") { dialog: DialogInterface, _: Int ->
                     dialog.cancel()
@@ -100,12 +102,13 @@ class DialogData : DialogFragment() {
     }
 
     companion object {
-        fun getInstance(data: Long, textview: Int, title: String?): DialogData {
+        fun getInstance(data: Long, textview: Int, title: String?, fragment: Int): DialogData {
             val opisanie = DialogData()
             val bundle = Bundle()
             bundle.putLong("data", data)
             bundle.putInt("textview", textview)
             bundle.putString("title", title)
+            bundle.putInt("fragment", fragment)
             opisanie.arguments = bundle
             return opisanie
         }

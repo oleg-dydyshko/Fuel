@@ -43,17 +43,6 @@ class DialodOpisanieEditReakt : DialogFragment() {
         this.listiner = listiner
     }
 
-    /*override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Activity) {
-            listiner = try {
-                context as ListUpdateListiner
-            } catch (e: ClassCastException) {
-                throw ClassCastException("$context must implement ListUpdateListiner")
-            }
-        }
-    }*/
-
     fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
         var zero = ""
         var zero2 = ""
@@ -86,7 +75,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                     val t1 = textView3e.text.toString().split("-").toTypedArray()
                     GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
                 }
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, textView3.text.toString())
+                val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, textView3.text.toString(), 2)
                 fragmentManager?.let {
                     data.show(it, "data")
                 }
@@ -99,7 +88,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                     val t1 = textView8e.text.toString().split("-").toTypedArray()
                     if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
                 }
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, textView8.text.toString())
+                val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, textView8.text.toString(), 2)
                 fragmentManager?.let {
                     data.show(it, "data")
                 }

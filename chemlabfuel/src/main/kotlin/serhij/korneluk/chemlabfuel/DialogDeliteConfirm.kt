@@ -16,24 +16,12 @@ class DialogDeliteConfirm : DialogFragment() {
     private var listiner: DialogDeliteConfirmlistiner? = null
 
     internal interface DialogDeliteConfirmlistiner {
-        fun deliteData(groupPosition: Int, position: Int)
-        fun deliteData(position: Int)
+        fun deliteData(position: Int, groupPosition: Int)
     }
 
     internal fun setDialogDeliteConfirmlistiner(listiner: DialogDeliteConfirmlistiner) {
         this.listiner = listiner
     }
-
-    /*override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Activity) {
-            listiner = try {
-                context as DialogDeliteConfirmlistiner
-            } catch (e: ClassCastException) {
-                throw ClassCastException("$context must implement DialogDeliteConfirmlistiner")
-            }
-        }
-    }*/
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let {
@@ -58,10 +46,7 @@ class DialogDeliteConfirm : DialogFragment() {
             ad.setPositiveButton(getString(R.string.delite)) { _: DialogInterface?, _: Int ->
                 val groupPosition = arguments?.getInt("groupPosition", -1) ?: -1
                 val position = arguments?.getInt("position") ?: 0
-                if (groupPosition == -1)
-                    listiner?.deliteData(position)
-                else
-                    listiner?.deliteData(groupPosition, position)
+                listiner?.deliteData(position, groupPosition)
             }
             ad.setNegativeButton(getString(R.string.cansel)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
             alert = ad.create()

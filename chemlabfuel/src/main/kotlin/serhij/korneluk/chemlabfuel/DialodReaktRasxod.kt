@@ -46,17 +46,6 @@ class DialodReaktRasxod : DialogFragment() {
         this.listiner = listiner
     }
 
-    /*override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Activity) {
-            listiner = try {
-                context as UpdateJurnal
-            } catch (e: ClassCastException) {
-                throw ClassCastException("$context must implement UpdateJurnal")
-            }
-        }
-    }*/
-
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,7 +64,7 @@ class DialodReaktRasxod : DialogFragment() {
             val t1 = textView1e.text.toString().split("-").toTypedArray()
             c = GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
             fragmentManager?.let {
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, textView1.text.toString())
+                val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, textView1.text.toString(), 2)
                 data.show(it, "data")
             }
         }

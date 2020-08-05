@@ -84,9 +84,14 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
         overridePendingTransition(R.anim.alphain, R.anim.alphaout)
     }
 
-    override fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
-        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
-        page.setData(textview, year, month, dayOfMonth)
+    override fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int, fragment: Int) {
+        if (fragment == 1) {
+            val page = myTabPagerAdapter.getFragment(0) as CremLabFuelTab1
+            page.setData(textview, year, month, dayOfMonth)
+        } else {
+            val page2 = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
+            page2.setData(textview, year, month, dayOfMonth)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

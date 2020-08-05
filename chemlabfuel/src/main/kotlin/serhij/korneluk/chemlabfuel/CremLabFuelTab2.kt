@@ -110,10 +110,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         return super.onOptionsItemSelected(item)
     }
 
-    override fun deliteData(position: Int) {
-    }
-
-    override fun deliteData(groupPosition: Int, position: Int) {
+    override fun deliteData( position: Int, groupPosition: Int) {
         val mDatabase = FirebaseDatabase.getInstance().reference
         val arrayList = seash(groupPosition, position)
         if (CremLabFuel.ReaktiveSpisok[arrayList[18].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()

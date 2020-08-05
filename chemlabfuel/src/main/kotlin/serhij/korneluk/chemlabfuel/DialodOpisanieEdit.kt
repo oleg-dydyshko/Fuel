@@ -64,7 +64,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 val t1 = textView7e.text.toString().split("-").toTypedArray()
                 GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
             }
-            val data: DialogData = DialogData.getInstance(c.timeInMillis, 7, textView7.text.toString())
+            val data: DialogData = DialogData.getInstance(c.timeInMillis, 7, textView7.text.toString(), 1)
             fragmentManager?.let {
                 data.show(it, "data")
             }
@@ -77,7 +77,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 val t1 = textView9e.text.toString().split("-").toTypedArray()
                 GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
             }
-            val data: DialogData = DialogData.getInstance(c.timeInMillis, 9, textView9.text.toString())
+            val data: DialogData = DialogData.getInstance(c.timeInMillis, 9, textView9.text.toString(), 1)
             fragmentManager?.let {
                 data.show(it, "data")
             }
@@ -90,7 +90,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 val t1 = textView10e.text.toString().split("-").toTypedArray()
                 GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
             }
-            val data: DialogData = DialogData.getInstance(c.timeInMillis, 10, textView10.text.toString())
+            val data: DialogData = DialogData.getInstance(c.timeInMillis, 10, textView10.text.toString(), 1)
             fragmentManager?.let {
                 data.show(it, "data")
             }

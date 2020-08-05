@@ -23,17 +23,6 @@ class DialogContextMenu : DialogFragment() {
         this.mListener = mListener
     }
 
-    /*override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Activity) {
-            mListener = try {
-                context as DialogContextMenuListener
-            } catch (e: ClassCastException) {
-                throw ClassCastException("$context must implement DialogContextMenuListener")
-            }
-        }
-    }*/
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let {
             val builder = AlertDialog.Builder(it)
