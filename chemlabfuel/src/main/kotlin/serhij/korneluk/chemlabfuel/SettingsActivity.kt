@@ -73,7 +73,7 @@ class SettingsActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.alphain, R.anim.alphaout)
     }
 
-    private inner class ListAdapter internal constructor(context: Context) : ArrayAdapter<String>(context, R.layout.simple_list_item2, data) {
+    private inner class ListAdapter(context: Context) : ArrayAdapter<String>(context, R.layout.simple_list_item2, data) {
         override fun getView(position: Int, mView: View?, parent: ViewGroup): View {
             val root: View
             val viewHolder: ViewHolder

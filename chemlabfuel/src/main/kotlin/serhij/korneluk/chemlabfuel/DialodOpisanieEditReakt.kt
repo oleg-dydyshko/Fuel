@@ -250,7 +250,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
         dialog?.cancel()
     }
 
-    private inner class MyTextWatcher internal constructor(private val textView: EditText) : TextWatcher {
+    private inner class MyTextWatcher(private val textView: EditText) : TextWatcher {
         private var editPosition = 0
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -272,7 +272,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
 
     }
 
-    private inner class ListAdapter internal constructor(context: Context, private val dataA: Array<String>) : ArrayAdapter<String?>(context, R.layout.simple_list_item2, dataA) {
+    private inner class ListAdapter(context: Context, private val dataA: Array<String>) : ArrayAdapter<String?>(context, R.layout.simple_list_item2, dataA) {
         override fun getView(position: Int, mView: View?, parent: ViewGroup): View {
             val root: View
             val viewHolder: ViewHolder

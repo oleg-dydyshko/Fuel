@@ -80,13 +80,13 @@ class DialodReaktRasxod : DialogFragment() {
         val gson = Gson()
         val type = object : TypeToken<ArrayList<ArrayList<String?>?>?>() {}.type
         if (jurnal != "") {
-            jur = gson.fromJson<ArrayList<ArrayList<String>>>(jurnal, type)
+            jur = gson.fromJson(jurnal, type)
             textView1e.text = jur[position][0]
             textView2e.setText(jur[position][1])
             textView4e.setText(jur[position][3])
             textView3e.setText(jur[position][4])
         } else {
-            jur = gson.fromJson<ArrayList<ArrayList<String>>>(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(16), type)
+            jur = gson.fromJson(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(16), type)
         }
     }
 
@@ -161,7 +161,7 @@ class DialodReaktRasxod : DialogFragment() {
         }
     }
 
-    private inner class MyTextWatcher internal constructor(private val textView: EditText) : TextWatcher {
+    private inner class MyTextWatcher(private val textView: EditText) : TextWatcher {
         private var editPosition = 0
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

@@ -39,7 +39,7 @@ class DialogJurnal : DialogFragment() {
         activity?.let { activity ->
             val gson = Gson()
             val type = object : TypeToken<ArrayList<ArrayList<String>>>() {}.type
-            jur = gson.fromJson<ArrayList<ArrayList<String>>>(arguments?.getString("jurnal")?: "", type)
+            jur = gson.fromJson(arguments?.getString("jurnal")?: "", type)
             val builder = AlertDialog.Builder(activity)
             val linearLayout = LinearLayout(activity)
             linearLayout.orientation = LinearLayout.VERTICAL
@@ -73,7 +73,7 @@ class DialogJurnal : DialogFragment() {
         return alert
     }
 
-    private inner class ListAdapter internal constructor(context: Activity) : ArrayAdapter<ArrayList<String>>(context, R.layout.simple_list_item2, jur) {
+    private inner class ListAdapter(context: Activity) : ArrayAdapter<ArrayList<String>>(context, R.layout.simple_list_item2, jur) {
         private val fuel: SharedPreferences = context.getSharedPreferences("fuel", Context.MODE_PRIVATE)
         @SuppressLint("SetTextI18n")
         override fun getView(position: Int, mView: View?, parent: ViewGroup): View {

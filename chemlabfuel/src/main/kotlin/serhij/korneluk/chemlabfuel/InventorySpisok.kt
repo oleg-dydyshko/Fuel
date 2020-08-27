@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import java.util.*
 
-class InventorySpisok(val context: Context, val createdBy: String?, val data01: Long, val data02: String?, val data03: String?, val data04: String?, val data05: String?, val data06: String?, val data07: String?, val data08: String?, val data09: String?, val data10: String?, val data11: Long, val data12: String?, val uid: String?, val editedAt: Long, val editedBy: String?) : Comparable<InventorySpisok> {
+class InventorySpisok(val context: Context, val createdBy: String?, val data01: Long, val data02: String?, val data03: String?, val data04: String?, val data05: String?, val data06: String?, val data07: String?, val data08: String?, val data09: String?, val data10: String?, private val data11: Long, val data12: String?, val uid: String?, val editedAt: Long, val editedBy: String?) : Comparable<InventorySpisok> {
     private val fuel: SharedPreferences = context.getSharedPreferences("fuel", Context.MODE_PRIVATE)
     override fun compareTo(other: InventorySpisok): Int {
         val sort = fuel.getInt("sort", 0)
