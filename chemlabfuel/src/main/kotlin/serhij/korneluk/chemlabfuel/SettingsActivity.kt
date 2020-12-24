@@ -14,21 +14,24 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.settings_activity.*
+import serhij.korneluk.chemlabfuel.databinding.SettingsActivityBinding
 
 class SettingsActivity : AppCompatActivity() {
     private val data = arrayOf("за 45 дней", "за 30 дней", "за 15 дней", "за 10 дней", "за 5 дней", "Никогда")
+    private lateinit var binding: SettingsActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
         val editor = fuel.edit()
         val fontsize = fuel.getInt("fontsize", 18)
         val notifi = fuel.getInt("notification", 0)
-        setContentView(R.layout.settings_activity)
+        binding = SettingsActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val adapter: ArrayAdapter<String> = ListAdapter(this)
-        spinner9.adapter = adapter
-        spinner9.setSelection(notifi)
-        spinner9.onItemSelectedListener = object : OnItemSelectedListener {
+        binding.spinner9.adapter = adapter
+        binding.spinner9.setSelection(notifi)
+        binding.spinner9.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                 editor.putInt("notification", position)
                 editor.apply()
@@ -37,16 +40,16 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
         }
-        textsize.text = getString(R.string.text_size, fontsize)
-        textsize.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontsize.toFloat())
-        seekBar.max = 22 - 14
-        seekBar.progress = (fontsize - 14) / 2
-        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        binding.textsize.text = getString(R.string.text_size, fontsize)
+        binding.textsize.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontsize.toFloat())
+        binding.seekBar.max = 22 - 14
+        binding.seekBar.progress = (fontsize - 14) / 2
+        binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 var progress1 = progress
                 progress1 *= 2
-                textsize.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14 + progress1.toFloat())
-                textsize.text = getString(R.string.text_size, 14 + progress1)
+                binding.textsize.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14 + progress1.toFloat())
+                binding.textsize.text = getString(R.string.text_size, 14 + progress1)
                 editor.putInt("fontsize", 14 + progress1)
                 editor.apply()
             }
@@ -58,10 +61,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setTollbarTheme() {
-        title_toolbar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-        setSupportActionBar(toolbar)
+        binding.titleToolbar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        title_toolbar.text = "Настройки"
+        binding.titleToolbar.text = "Настройки"
     }
 
     override fun onBackPressed() {

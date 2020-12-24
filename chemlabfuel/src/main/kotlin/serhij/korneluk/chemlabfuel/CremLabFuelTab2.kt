@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.cremlabfuel_tab2.*
+import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab2Binding
 import java.math.BigDecimal
 import java.util.*
 
@@ -27,19 +27,28 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     private val spisokGroup = ArrayList<ReaktiveSpisok>()
     private lateinit var arrayAdapter2: ListAdapterReakt
     private val edIzmerenia = arrayOf("кг.", "мг.", "л.", "мл.")
+    private var _binding: CremlabfuelTab2Binding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.cremlabfuel_tab2, container, false)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = CremlabfuelTab2Binding.inflate(inflater, container, false)
+        return binding.root
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.let { activity ->
             arrayAdapter2 = ListAdapterReakt(activity)
-            listView2.setAdapter(arrayAdapter2)
-            listView2.setOnChildClickListener(this)
-            listView2.setOnItemLongClickListener { _: AdapterView<*>?, _: View?, i: Int, _: Long ->
-                val packedPosition = listView2.getExpandableListPosition(i)
+            binding.listView2.setAdapter(arrayAdapter2)
+            binding.listView2.setOnChildClickListener(this)
+            binding.listView2.setOnItemLongClickListener { _: AdapterView<*>?, _: View?, i: Int, _: Long ->
+                val packedPosition = binding.listView2.getExpandableListPosition(i)
                 val itemType = ExpandableListView.getPackedPositionType(packedPosition)
                 val groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition)
                 val childPosition = ExpandableListView.getPackedPositionChild(packedPosition)
@@ -110,7 +119,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         return super.onOptionsItemSelected(item)
     }
 
-    override fun deliteData( position: Int, groupPosition: Int) {
+    override fun deliteData(position: Int, groupPosition: Int) {
         val mDatabase = FirebaseDatabase.getInstance().reference
         val arrayList = seash(groupPosition, position)
         if (CremLabFuel.ReaktiveSpisok[arrayList[18].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()
@@ -285,7 +294,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
 
     private fun updateUI() {
         activity?.let { activity ->
-            loading.visibility = View.VISIBLE
+            binding.loading.visibility = View.VISIBLE
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
                 val mDatabase = FirebaseDatabase.getInstance().reference
@@ -383,7 +392,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                         }
                         spisokGroup.sort()
                         arrayAdapter2.notifyDataSetChanged()
-                        loading.visibility = View.GONE
+                        binding.loading.visibility = View.GONE
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {}
@@ -393,14 +402,14 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                     val internet = DialogNoInternet()
                     internet.show(it, "internet")
                 }
-                loading.visibility = View.GONE
+                binding.loading.visibility = View.GONE
             }
         }
     }
 
     fun setExpandGroup() {
         for (i in 0 until arrayAdapter2.groupCount) {
-            listView2.expandGroup(i)
+            binding.listView2.expandGroup(i)
         }
     }
 

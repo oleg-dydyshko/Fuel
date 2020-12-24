@@ -11,15 +11,18 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_main.*
+import serhij.korneluk.chemlabfuel.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private var email: String = ""
     private var password1: String = ""
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
         if (intent.extras?.getBoolean("notifications", false) == true) {
             val editor = fuel.edit()
@@ -28,12 +31,12 @@ class MainActivity : AppCompatActivity() {
         }
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance()
-        login.setOnClickListener {
+        binding.login.setOnClickListener {
             // Скрываем клавиатуру
             val imm1 = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm1.hideSoftInputFromWindow(username.windowToken, 0)
-            email = username.text.toString()
-            password1 = password.text.toString()
+            imm1.hideSoftInputFromWindow(binding.username.windowToken, 0)
+            email = binding.username.text.toString()
+            password1 = binding.password.text.toString()
             if (email != "" && password1 != "") {
                 mAuth.signInWithEmailAndPassword(email, password1).addOnCompleteListener(this@MainActivity) { task: Task<AuthResult?> ->
                     if (task.isSuccessful) {
@@ -49,17 +52,17 @@ class MainActivity : AppCompatActivity() {
                 updateUI(null)
             }
         }
-        link.isClickable = true
-        link.movementMethod = LinkMovementMethod.getInstance()
+        binding.link.isClickable = true
+        binding.link.movementMethod = LinkMovementMethod.getInstance()
         val text = "<a href='https://github.com/oleg-dydyshko/Fuel/blob/master/README.md'>Политика конфиденциальности</a>"
-        link.text = CremLabFuel.fromHtml(text)
+        binding.link.text = CremLabFuel.fromHtml(text)
         setTollbarTheme()
     }
 
     private fun setTollbarTheme() {
-        title_toolbar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-        setSupportActionBar(toolbar)
-        title_toolbar.setText(R.string.app_main)
+        binding.titleToolbar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+        setSupportActionBar(binding.toolbar)
+        binding.titleToolbar.setText(R.string.app_main)
     }
 
     public override fun onResume() {

@@ -14,7 +14,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.cremlabfuel_tab1.*
+import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab1Binding
 import java.util.*
 
 class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner, DialogContextMenu.DialogContextMenuListener {
@@ -22,18 +22,26 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
     private lateinit var arrayAdapter: ListAdapter
     private var edit: DialodOpisanieEdit? = null
+    private var _binding: CremlabfuelTab1Binding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.cremlabfuel_tab1, container, false)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = CremlabfuelTab1Binding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.let {
             arrayAdapter = ListAdapter(it)
-            listView.adapter = arrayAdapter
-            listView.onItemClickListener = this
-            listView.onItemLongClickListener = this
+            binding.listView.adapter = arrayAdapter
+            binding.listView.onItemClickListener = this
+            binding.listView.onItemLongClickListener = this
             updateUI()
         }
     }
@@ -187,7 +195,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
 
     private fun updateUI() {
         activity?.let { activity ->
-            loading.visibility = View.VISIBLE
+            binding.loading.visibility = View.VISIBLE
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
                 val mDatabase = FirebaseDatabase.getInstance().reference
@@ -208,7 +216,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                         }
                         inventarnySpisok.sort()
                         arrayAdapter.notifyDataSetChanged()
-                        loading.visibility = View.GONE
+                        binding.loading.visibility = View.GONE
                         activity.sendBroadcast(Intent(activity, ReceiverSetAlarm::class.java))
                     }
 
@@ -219,7 +227,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                     val internet = DialogNoInternet()
                     internet.show(it, "internet")
                 }
-                loading.visibility = View.GONE
+                binding.loading.visibility = View.GONE
             }
         }
     }

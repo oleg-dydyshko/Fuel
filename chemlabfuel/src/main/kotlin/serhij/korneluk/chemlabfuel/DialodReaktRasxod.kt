@@ -9,8 +9,6 @@ import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
@@ -19,7 +17,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.dialog_reakt_rasxod.*
+import serhij.korneluk.chemlabfuel.databinding.DialogReaktRasxodBinding
 import java.math.BigDecimal
 import java.util.*
 
@@ -36,7 +34,8 @@ class DialodReaktRasxod : DialogFragment() {
     private var position = 0
     private lateinit var jur: ArrayList<ArrayList<String>>
     private var listiner: UpdateJurnal? = null
-    private lateinit var rootView: View
+    private var _binding: DialogReaktRasxodBinding? = null
+    private val binding get() = _binding!!
 
     internal interface UpdateJurnal {
         fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String)
@@ -46,61 +45,58 @@ class DialodReaktRasxod : DialogFragment() {
         this.listiner = listiner
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     @SuppressLint("SetTextI18n")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (arguments != null) {
-            groupPosition = arguments?.getInt("groupposition", 1) ?: 1
-            childposition = arguments?.getInt("childposition", 1) ?: 1
-            izmerenie = arguments?.getInt("izmerenie", 0) ?: 0
-            user = arguments?.getString("user", "") ?: ""
-            jurnal = arguments?.getString("jurnal", "") ?: ""
-            position = arguments?.getInt("position", 0) ?: 0
-        }
-        kolkast.text = kolkast.text.toString() + " в " + edIzmerenia[izmerenie]
-        c = Calendar.getInstance() as GregorianCalendar
-        setData(1, c[Calendar.YEAR], c[Calendar.MONTH], c[Calendar.DATE])
-        button1.setOnClickListener {
-            val t1 = textView1e.text.toString().split("-").toTypedArray()
-            c = GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
-            fragmentManager?.let {
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, textView1.text.toString(), 2)
-                data.show(it, "data")
-            }
-        }
-        textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
-        textView3e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                send()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-        textView2e.addTextChangedListener(MyTextWatcher(textView2e))
-        val gson = Gson()
-        val type = object : TypeToken<ArrayList<ArrayList<String?>?>?>() {}.type
-        if (jurnal != "") {
-            jur = gson.fromJson(jurnal, type)
-            textView1e.text = jur[position][0]
-            textView2e.setText(jur[position][1])
-            textView4e.setText(jur[position][3])
-            textView3e.setText(jur[position][4])
-        } else {
-            jur = gson.fromJson(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(16), type)
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return rootView
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let { activity ->
-            rootView = View.inflate(activity, R.layout.dialog_reakt_rasxod, null)
+            _binding = DialogReaktRasxodBinding.inflate(LayoutInflater.from(activity))
+            if (arguments != null) {
+                groupPosition = arguments?.getInt("groupposition", 1) ?: 1
+                childposition = arguments?.getInt("childposition", 1) ?: 1
+                izmerenie = arguments?.getInt("izmerenie", 0) ?: 0
+                user = arguments?.getString("user", "") ?: ""
+                jurnal = arguments?.getString("jurnal", "") ?: ""
+                position = arguments?.getInt("position", 0) ?: 0
+            }
+            binding.kolkast.text = binding.kolkast.text.toString() + " в " + edIzmerenia[izmerenie]
+            c = Calendar.getInstance() as GregorianCalendar
+            setData(1, c[Calendar.YEAR], c[Calendar.MONTH], c[Calendar.DATE])
+            binding.button1.setOnClickListener {
+                val t1 = binding.textView1e.text.toString().split("-").toTypedArray()
+                c = GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
+                fragmentManager?.let {
+                    val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, binding.textView1.text.toString(), 2)
+                    data.show(it, "data")
+                }
+            }
+            binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
+            binding.textView3e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    send()
+                    return@setOnEditorActionListener true
+                }
+                false
+            }
+            binding.textView2e.addTextChangedListener(MyTextWatcher(binding.textView2e))
+            val gson = Gson()
+            val type = object : TypeToken<ArrayList<ArrayList<String?>?>?>() {}.type
+            if (jurnal != "") {
+                jur = gson.fromJson(jurnal, type)
+                binding.textView1e.text = jur[position][0]
+                binding.textView2e.setText(jur[position][1])
+                binding.textView4e.setText(jur[position][3])
+                binding.textView3e.setText(jur[position][4])
+            } else {
+                jur = gson.fromJson(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(16), type)
+            }
             val builder = AlertDialog.Builder(activity)
             builder.setPositiveButton(getString(R.string.save)) { _: DialogInterface?, _: Int -> send() }
             builder.setNegativeButton(getString(R.string.cansel)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
-            builder.setView(rootView)
+            builder.setView(binding.root)
             alert = builder.create()
             alert.setOnShowListener {
                 val btnPositive = alert.getButton(Dialog.BUTTON_POSITIVE)
@@ -113,31 +109,31 @@ class DialodReaktRasxod : DialogFragment() {
     }
 
     private fun send() {
-        if (textView2e.text.toString().trim() != "" && textView3e.text.toString() != "") {
-            if (textView4e.text.toString().trim() == "") textView4e.setText("1")
+        if (binding.textView2e.text.toString().trim() != "" && binding.textView3e.text.toString() != "") {
+            if (binding.textView4e.text.toString().trim() == "") binding.textView4e.setText("1")
             val correkt: BigDecimal
             if (jurnal == "") {
                 correkt = BigDecimal(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9))
                 val subJurnal = ArrayList<String>()
-                subJurnal.add(textView1e.text.toString())
-                subJurnal.add(BigDecimal(textView2e.text.toString().trim().replace(",", ".")).toString().replace(".", ","))
+                subJurnal.add(binding.textView1e.text.toString())
+                subJurnal.add(BigDecimal(binding.textView2e.text.toString().trim().replace(",", ".")).toString().replace(".", ","))
                 subJurnal.add(edIzmerenia2[izmerenie])
-                subJurnal.add(BigDecimal(textView4e.text.toString().trim().replace(",", ".")).toString().replace(".", ","))
-                subJurnal.add(textView3e.text.toString())
+                subJurnal.add(BigDecimal(binding.textView4e.text.toString().trim().replace(",", ".")).toString().replace(".", ","))
+                subJurnal.add(binding.textView3e.text.toString())
                 subJurnal.add(user)
                 jur.add(subJurnal)
             } else {
                 correkt = BigDecimal(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9)).add(BigDecimal(jur[position][1].replace(",", ".")))
-                jur[position][0] = textView1e.text.toString()
-                jur[position][1] = BigDecimal(textView2e.text.toString().trim().replace(",", ".")).toString().replace(".", ",")
+                jur[position][0] = binding.textView1e.text.toString()
+                jur[position][1] = BigDecimal(binding.textView2e.text.toString().trim().replace(",", ".")).toString().replace(".", ",")
                 jur[position][2] = edIzmerenia2[izmerenie]
-                jur[position][3] = BigDecimal(textView4e.text.toString().trim().replace(",", ".")).toString().replace(".", ",")
-                jur[position][4] = textView3e.text.toString()
+                jur[position][3] = BigDecimal(binding.textView4e.text.toString().trim().replace(",", ".")).toString().replace(".", ",")
+                jur[position][4] = binding.textView3e.text.toString()
                 jur[position][5] = user
             }
             val nomerProdukta = groupPosition.toString()
             val nomerPartii = childposition.toString()
-            val ras = BigDecimal(textView2e.text.toString().trim().replace(",", "."))
+            val ras = BigDecimal(binding.textView2e.text.toString().trim().replace(",", "."))
             val rasxod = correkt.subtract(ras)
             val mDatabase = FirebaseDatabase.getInstance().reference
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(rasxod.toDouble())
@@ -157,7 +153,7 @@ class DialodReaktRasxod : DialogFragment() {
         if (month < 9) zero = "0"
         if (dayOfMonth < 10) zero2 = "0"
         if (textview == 1) {
-            if (year == 0) textView1e.text = "" else textView1e.text = getString(R.string.set_date, year, zero, month + 1, zero2, dayOfMonth)
+            if (year == 0) binding.textView1e.text = "" else binding.textView1e.text = getString(R.string.set_date, year, zero, month + 1, zero2, dayOfMonth)
         }
     }
 

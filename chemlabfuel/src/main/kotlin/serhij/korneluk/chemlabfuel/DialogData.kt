@@ -7,20 +7,19 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.CalendarView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.dialog_data.*
+import serhij.korneluk.chemlabfuel.databinding.DialogDataBinding
 import java.util.*
 
 class DialogData : DialogFragment() {
     private lateinit var alert: AlertDialog
     private lateinit var builder: AlertDialog.Builder
     private var listiner: DialogDataListiner? = null
-    private lateinit var rootView: View
     private var fragment = 1
+    private var _binding: DialogDataBinding? = null
+    private val binding get() = _binding!!
 
     internal interface DialogDataListiner {
         fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int, fragment: Int)
@@ -37,44 +36,40 @@ class DialogData : DialogFragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        title.text = arguments?.getString("title") ?: ""
-        calendarView.date = arguments?.getLong("data") ?: 0L
-        fragment = arguments?.getInt("fragment") ?: 1
-        today.setOnClickListener {
-            val c = Calendar.getInstance() as GregorianCalendar
-            calendarView.date = c.timeInMillis
-        }
-        textView1.setOnClickListener {
-            val c = GregorianCalendar()
-            c.timeInMillis = calendarView.date
-            c.add(Calendar.YEAR, -1)
-            calendarView.date = c.timeInMillis
-        }
-        textView2.setOnClickListener {
-            val c = GregorianCalendar()
-            c.timeInMillis = calendarView.date
-            c.add(Calendar.YEAR, 1)
-            calendarView.date = c.timeInMillis
-        }
-        val textview = arguments?.getInt("textview") ?: 0
-        calendarView.setOnDateChangeListener { _: CalendarView?, year: Int, month: Int, dayOfMonth: Int ->
-            listiner?.setData(textview, year, month, dayOfMonth, fragment)
-            dialog?.cancel()
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return rootView
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let {
-            rootView = View.inflate(it, R.layout.dialog_data, null)
-            builder = AlertDialog.Builder(it)
-            builder.setView(rootView)
+            _binding = DialogDataBinding.inflate(LayoutInflater.from(it))
+            binding.title.text = arguments?.getString("title") ?: ""
+            binding.calendarView.date = arguments?.getLong("data") ?: 0L
+            fragment = arguments?.getInt("fragment") ?: 1
+            binding.today.setOnClickListener {
+                val c = Calendar.getInstance() as GregorianCalendar
+                binding.calendarView.date = c.timeInMillis
+            }
+            binding.textView1.setOnClickListener {
+                val c = GregorianCalendar()
+                c.timeInMillis = binding.calendarView.date
+                c.add(Calendar.YEAR, -1)
+                binding.calendarView.date = c.timeInMillis
+            }
+            binding.textView2.setOnClickListener {
+                val c = GregorianCalendar()
+                c.timeInMillis = binding.calendarView.date
+                c.add(Calendar.YEAR, 1)
+                binding.calendarView.date = c.timeInMillis
+            }
             val textview = arguments?.getInt("textview") ?: 0
+            binding.calendarView.setOnDateChangeListener { _: CalendarView?, year: Int, month: Int, dayOfMonth: Int ->
+                listiner?.setData(textview, year, month, dayOfMonth, fragment)
+                dialog?.cancel()
+            }
+            builder = AlertDialog.Builder(it)
+            builder.setView(binding.root)
             if (textview == 7 || textview == 9 || textview == 10) {
                 builder.setNeutralButton("Удалить дату") { _: DialogInterface?, _: Int ->
                     listiner?.setData(arguments?.getInt("textview") ?: 0, 0, 0, 0, fragment)

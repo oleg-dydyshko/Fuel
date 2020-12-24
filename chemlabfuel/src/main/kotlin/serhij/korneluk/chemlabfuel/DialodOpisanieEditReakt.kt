@@ -21,7 +21,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.dialog_opisanie_edit_reakt.*
+import serhij.korneluk.chemlabfuel.databinding.DialogOpisanieEditReaktBinding
 import java.util.*
 
 class DialodOpisanieEditReakt : DialogFragment() {
@@ -33,7 +33,8 @@ class DialodOpisanieEditReakt : DialogFragment() {
     private var edIzmerenia = 0
     private val data = arrayOf("Килограмм", "Миллиграмм", "Литры", "Миллилитры")
     private var listiner: ListUpdateListiner? = null
-    private lateinit var rootView: View
+    private var _binding: DialogOpisanieEditReaktBinding? = null
+    private val binding get() = _binding!!
 
     internal interface ListUpdateListiner {
         fun updateList()
@@ -49,108 +50,102 @@ class DialodOpisanieEditReakt : DialogFragment() {
         if (month < 9) zero = "0"
         if (dayOfMonth < 10) zero2 = "0"
         when (textview) {
-            3 -> if (year == 0) textView3e.text = "" else textView3e.text = getString(R.string.set_date, year, zero, month + 1, zero2, dayOfMonth)
-            8 -> if (year == 0) textView8e.setText("") else textView8e.setText(getString(R.string.set_date, year, zero, month + 1, zero2, dayOfMonth))
+            3 -> if (year == 0) binding.textView3e.text = "" else binding.textView3e.text = getString(R.string.set_date, year, zero, month + 1, zero2, dayOfMonth)
+            8 -> if (year == 0) binding.textView8e.setText("") else binding.textView8e.setText(getString(R.string.set_date, year, zero, month + 1, zero2, dayOfMonth))
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        activity?.let { activity ->
-            val god = arrayOf("Год", "Месяц")
-            textView2e.addTextChangedListener(MyTextWatcher(textView2e))
-            spinner9.adapter = ListAdapter(activity, god)
-            spinner11e.adapter = ListAdapter(activity, data)
-            spinner11e.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {}
-                override fun onNothingSelected(arg0: AdapterView<*>?) {}
-            }
-            textView12e.addTextChangedListener(MyTextWatcher(textView12e))
-            textView13e.addTextChangedListener(MyTextWatcher(textView13e))
-            button3.setOnClickListener {
-                val c: GregorianCalendar
-                c = if (textView3e.text.toString() == "") {
-                    Calendar.getInstance() as GregorianCalendar
-                } else {
-                    val t1 = textView3e.text.toString().split("-").toTypedArray()
-                    GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
-                }
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, textView3.text.toString(), 2)
-                fragmentManager?.let {
-                    data.show(it, "data")
-                }
-            }
-            button8.setOnClickListener {
-                val c: GregorianCalendar
-                c = if (textView8e.text.toString() == "") {
-                    Calendar.getInstance() as GregorianCalendar
-                } else {
-                    val t1 = textView8e.text.toString().split("-").toTypedArray()
-                    if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
-                }
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, textView8.text.toString(), 2)
-                fragmentManager?.let {
-                    data.show(it, "data")
-                }
-            }
-            user = arguments?.getString("user", "") ?: ""
-            title = arguments?.getString("title", "") ?: ""
-            groupPosition = arguments?.getInt("groupposition", 1) ?: 1
-            childposition = arguments?.getInt("childposition", 1) ?: 1
-            val minostatok = arguments?.getString("minostatok", "") ?: ""
-            edIzmerenia = arguments?.getInt("ed_izmerenia", 0) ?: 0
-            if (add) {
-                textViewTitle.setText(R.string.add)
-                textView2e.setText(title)
-                textView13e.setText(minostatok)
-                textView13e.imeOptions = EditorInfo.IME_ACTION_GO
-                textView13e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
-                    if (actionId == EditorInfo.IME_ACTION_GO) {
-                        send()
-                        return@setOnEditorActionListener true
-                    }
-                    false
-                }
-                spinner11e.setSelection(edIzmerenia)
-            } else {
-                textView12.setText(R.string.kol_na_ost)
-                spinner9.visibility = View.GONE
-                textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
-                textView2e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
-                textView3e.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
-                textView5e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(2))
-                textView6e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
-                textView7e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
-                textView8e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
-                textView9e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
-                textView10e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
-                spinner11e.setSelection(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt()
-                        ?: 0)
-                textView12e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
-                textView13e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
-                textView14e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
-            }
-            textView2e.setSelection(textView2e.text.length)
-            textView5e.setSelection(textView5e.text.length)
-            textView6e.setSelection(textView6e.text.length)
-            textView7e.setSelection(textView7e.text.length)
-            textView9e.setSelection(textView9e.text.length)
-            textView10e.setSelection(textView10e.text.length)
-            textView12e.setSelection(textView12e.text.length)
-            textView13e.setSelection(textView13e.text.length)
-            textView14e.setSelection(textView14e.text.length)
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return rootView
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let { activity ->
             val builder = AlertDialog.Builder(activity)
-            rootView = View.inflate(activity, R.layout.dialog_opisanie_edit_reakt, null)
-            builder.setView(rootView)
+            _binding = DialogOpisanieEditReaktBinding.inflate(LayoutInflater.from(activity))
+            builder.setView(binding.root)
+                val god = arrayOf("Год", "Месяц")
+                binding.textView2e.addTextChangedListener(MyTextWatcher(binding.textView2e))
+                binding.spinner9.adapter = ListAdapter(activity, god)
+                binding.spinner11e.adapter = ListAdapter(activity, data)
+                binding.spinner11e.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {}
+                    override fun onNothingSelected(arg0: AdapterView<*>?) {}
+                }
+                binding.textView12e.addTextChangedListener(MyTextWatcher(binding.textView12e))
+                binding.textView13e.addTextChangedListener(MyTextWatcher(binding.textView13e))
+                binding.button3.setOnClickListener {
+                    val c: GregorianCalendar
+                    c = if (binding.textView3e.text.toString() == "") {
+                        Calendar.getInstance() as GregorianCalendar
+                    } else {
+                        val t1 = binding.textView3e.text.toString().split("-").toTypedArray()
+                        GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
+                    }
+                    val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString(), 2)
+                    fragmentManager?.let {
+                        data.show(it, "data")
+                    }
+                }
+                binding.button8.setOnClickListener {
+                    val c: GregorianCalendar
+                    c = if (binding.textView8e.text.toString() == "") {
+                        Calendar.getInstance() as GregorianCalendar
+                    } else {
+                        val t1 = binding.textView8e.text.toString().split("-").toTypedArray()
+                        if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
+                    }
+                    val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString(), 2)
+                    fragmentManager?.let {
+                        data.show(it, "data")
+                    }
+                }
+                user = arguments?.getString("user", "") ?: ""
+                title = arguments?.getString("title", "") ?: ""
+                groupPosition = arguments?.getInt("groupposition", 1) ?: 1
+                childposition = arguments?.getInt("childposition", 1) ?: 1
+                val minostatok = arguments?.getString("minostatok", "") ?: ""
+                edIzmerenia = arguments?.getInt("ed_izmerenia", 0) ?: 0
+                if (add) {
+                    binding.textViewTitle.setText(R.string.add)
+                    binding.textView2e.setText(title)
+                    binding.textView13e.setText(minostatok)
+                    binding.textView13e.imeOptions = EditorInfo.IME_ACTION_GO
+                    binding.textView13e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
+                        if (actionId == EditorInfo.IME_ACTION_GO) {
+                            send()
+                            return@setOnEditorActionListener true
+                        }
+                        false
+                    }
+                    binding.spinner11e.setSelection(edIzmerenia)
+                } else {
+                    binding.textView12.setText(R.string.kol_na_ost)
+                    binding.spinner9.visibility = View.GONE
+                    binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
+                    binding.textView2e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
+                    binding.textView3e.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
+                    binding.textView5e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(2))
+                    binding.textView6e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
+                    binding.textView7e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
+                    binding.textView8e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
+                    binding.textView9e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
+                    binding.textView10e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
+                    binding.spinner11e.setSelection(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt() ?: 0)
+                    binding.textView12e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
+                    binding.textView13e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
+                    binding.textView14e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
+                }
+                binding.textView2e.setSelection(binding.textView2e.text.length)
+                binding.textView5e.setSelection(binding.textView5e.text.length)
+                binding.textView6e.setSelection(binding.textView6e.text.length)
+                binding.textView7e.setSelection(binding.textView7e.text.length)
+                binding.textView9e.setSelection(binding.textView9e.text.length)
+                binding.textView10e.setSelection(binding.textView10e.text.length)
+                binding.textView12e.setSelection(binding.textView12e.text.length)
+                binding.textView13e.setSelection(binding.textView13e.text.length)
+                binding.textView14e.setSelection(binding.textView14e.text.length)
             builder.setPositiveButton(getString(R.string.save)) { _: DialogInterface?, _: Int -> send() }
             builder.setNegativeButton(getString(R.string.cansel)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
             alert = builder.create()
@@ -166,34 +161,34 @@ class DialodOpisanieEditReakt : DialogFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun send() {
-        if (textView6e.text.toString().trim() == "") {
-            textView6e.setText(R.string.no)
+        if (binding.textView6e.text.toString().trim() == "") {
+            binding.textView6e.setText(R.string.no)
         }
-        if (textView8e.text.toString().trim() == "") {
+        if (binding.textView8e.text.toString().trim() == "") {
             val calendar = Calendar.getInstance()
             val month = calendar[Calendar.MONTH] + 1
             var zero = ""
             if (month < 10) zero = "0"
-            textView8e.setText(calendar[Calendar.YEAR].toString() + "-" + zero + month)
+            binding.textView8e.setText(calendar[Calendar.YEAR].toString() + "-" + zero + month)
         }
-        if (textView9e.text.toString().trim() == "") {
-            textView9e.setText("1")
+        if (binding.textView9e.text.toString().trim() == "") {
+            binding.textView9e.setText("1")
         }
-        if (textView10e.text.toString().trim() == "") {
-            textView10e.setText(R.string.obychnye)
+        if (binding.textView10e.text.toString().trim() == "") {
+            binding.textView10e.setText(R.string.obychnye)
         }
-        if (textView12e.text.toString().trim() == "") {
-            textView12e.setText("0")
+        if (binding.textView12e.text.toString().trim() == "") {
+            binding.textView12e.setText("0")
         }
-        if (textView13e.text.toString().trim() == "") {
-            textView13e.setText("0")
+        if (binding.textView13e.text.toString().trim() == "") {
+            binding.textView13e.setText("0")
         }
         val mDatabase = FirebaseDatabase.getInstance().reference
         val g = Calendar.getInstance() as GregorianCalendar
         var nomerProdukta = groupPosition.toString()
         var nomerPartii = childposition.toString()
-        var text9 = java.lang.Long.valueOf(textView9e.text.toString().trim())
-        if (add && spinner9.selectedItemPosition == 0) {
+        var text9 = java.lang.Long.valueOf(binding.textView9e.text.toString().trim())
+        if (add && binding.spinner9.selectedItemPosition == 0) {
             text9 *= 12
         }
         if (add) {
@@ -209,13 +204,13 @@ class DialodOpisanieEditReakt : DialogFragment() {
                                 if (title == "") {
                                     groupPosition = value1.toInt() + 1
                                     nomerProdukta = groupPosition.toString()
-                                } else if (textView2e.text.toString().trim().contains(name)) {
+                                } else if (binding.textView2e.text.toString().trim().contains(name)) {
                                     groupPosition = value1.toInt()
                                     nomerProdukta = groupPosition.toString()
                                 }
                             }
                             if (key == 15) {
-                                if (textView2e.text.toString().trim().contains(name)) {
+                                if (binding.textView2e.text.toString().trim().contains(name)) {
                                     childposition = value1.toInt() + 1
                                     nomerPartii = childposition.toString()
                                 }
@@ -227,18 +222,18 @@ class DialodOpisanieEditReakt : DialogFragment() {
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("createdAt").setValue(g.timeInMillis)
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("createdBy").setValue(user)
         }
-        mDatabase.child("reagents").child(nomerProdukta).child("name").setValue(textView2e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data01").setValue(textView3e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data02").setValue(textView5e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data03").setValue(textView6e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data04").setValue(textView7e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data05").setValue(textView8e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child("name").setValue(binding.textView2e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data01").setValue(binding.textView3e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data02").setValue(binding.textView5e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data03").setValue(binding.textView6e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data04").setValue(binding.textView7e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data05").setValue(binding.textView8e.text.toString().trim())
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data06").setValue(text9)
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data07").setValue(textView10e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data08").setValue(spinner11e.selectedItemPosition.toLong())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(java.lang.Double.valueOf(textView12e.text.toString().trim().replace(",", ".")))
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(java.lang.Double.valueOf(textView13e.text.toString().trim().replace(",", ".")))
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data12").setValue(textView14e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data07").setValue(binding.textView10e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data08").setValue(binding.spinner11e.selectedItemPosition.toLong())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(java.lang.Double.valueOf(binding.textView12e.text.toString().trim().replace(",", ".")))
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(java.lang.Double.valueOf(binding.textView13e.text.toString().trim().replace(",", ".")))
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data12").setValue(binding.textView14e.text.toString().trim())
         if (!add) {
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedAt").setValue(g.timeInMillis)
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedBy").setValue(user)
@@ -260,7 +255,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
         override fun afterTextChanged(s: Editable) {
             var edit = s.toString()
             if (textView.id == R.id.textView2e && edit != "") {
-                textViewTitle.text = edit
+                binding.textViewTitle.text = edit
             } else {
                 edit = edit.replace(".", ",")
                 textView.removeTextChangedListener(this)

@@ -29,30 +29,31 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.cremlabfuel.*
 import serhij.korneluk.chemlabfuel.DialogData.DialogDataListiner
-import java.util.*
+import serhij.korneluk.chemlabfuel.databinding.CremlabfuelBinding
 
 class CremLabFuel : AppCompatActivity(), DialogDataListiner {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
+    private lateinit var binding: CremlabfuelBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.cremlabfuel)
+        binding = CremlabfuelBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
         mAuth = FirebaseAuth.getInstance()
         myTabPagerAdapter = MyTabPagerAdapter(supportFragmentManager)
-        tabPager.adapter = myTabPagerAdapter
-        tabLayout.setupWithViewPager(tabPager)
+        binding.tabPager.adapter = myTabPagerAdapter
+        binding.tabLayout.setupWithViewPager(binding.tabPager)
         if (fuel.getBoolean("oborudovanie", true)) {
-            tabPager.currentItem = 0
+            binding.tabPager.currentItem = 0
         } else {
-            tabPager.currentItem = 1
+            binding.tabPager.currentItem = 1
         }
-        tabLayout.setupWithViewPager(tabPager)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayout.setupWithViewPager(binding.tabPager)
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
 
@@ -61,7 +62,7 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val position = tab?.position ?: 0
-                tabPager.currentItem = position
+                binding.tabPager.currentItem = position
                 val editor = fuel.edit()
                 if (position == 0) editor.putBoolean("oborudovanie", true)
                 else editor.putBoolean("oborudovanie", false)
@@ -74,9 +75,9 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
     }
 
     private fun setTollbarTheme() {
-        title_toolbar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-        setSupportActionBar(toolbar)
-        title_toolbar.setText(R.string.app_main)
+        binding.titleToolbar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+        setSupportActionBar(binding.toolbar)
+        binding.titleToolbar.setText(R.string.app_main)
     }
 
     public override fun onResume() {
@@ -188,7 +189,7 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
                     editor.putString("users", gson.toJson(users))
                     editor.apply()
                     if (intent.extras?.getBoolean("reaktive", false) == true) {
-                        tabPager.currentItem = 1
+                        binding.tabPager.currentItem = 1
                         val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
                         page.setExpandGroup()
                     }
@@ -209,7 +210,7 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
             return 2
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             return if (position == 0)
                 getString(R.string.oborudovanie)
             else

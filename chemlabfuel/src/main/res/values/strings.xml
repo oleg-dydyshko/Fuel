@@ -33,7 +33,6 @@
     <string name="save">Сохранить</string>
     <string name="add">Добавить запись</string>
     <string name="set_date">%1$d-%2$s%3$d-%4$s%5$d</string>
-    <string name="set_date2">%1$d-%2$s%3$d</string>
     <string name="oborudovanie">Оборудование</string>
     <string name="reaktivy">Реактивы</string>
     <string name="name_reaktiv">Наименование реактива</string>
