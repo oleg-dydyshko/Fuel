@@ -16,6 +16,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab1Binding
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner, DialogContextMenu.DialogContextMenuListener {
 
@@ -195,7 +197,6 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
 
     private fun updateUI() {
         activity?.let { activity ->
-            binding.loading.visibility = View.VISIBLE
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
                 val mDatabase = FirebaseDatabase.getInstance().reference
@@ -216,7 +217,6 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                         }
                         inventarnySpisok.sort()
                         arrayAdapter.notifyDataSetChanged()
-                        binding.loading.visibility = View.GONE
                         activity.sendBroadcast(Intent(activity, ReceiverSetAlarm::class.java))
                     }
 
@@ -227,7 +227,6 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                     val internet = DialogNoInternet()
                     internet.show(it, "internet")
                 }
-                binding.loading.visibility = View.GONE
             }
         }
     }

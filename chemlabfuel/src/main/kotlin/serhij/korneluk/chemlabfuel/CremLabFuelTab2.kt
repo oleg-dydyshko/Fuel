@@ -17,6 +17,9 @@ import com.google.gson.Gson
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab2Binding
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, DialogContextMenuReakt.DialogContextMenuReaktListener, DialodOpisanieEditReakt.ListUpdateListiner, DialodReaktRasxod.UpdateJurnal, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
 
@@ -294,7 +297,6 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
 
     private fun updateUI() {
         activity?.let { activity ->
-            binding.loading.visibility = View.VISIBLE
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
                 val mDatabase = FirebaseDatabase.getInstance().reference
@@ -392,7 +394,6 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                         }
                         spisokGroup.sort()
                         arrayAdapter2.notifyDataSetChanged()
-                        binding.loading.visibility = View.GONE
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {}
@@ -402,7 +403,6 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                     val internet = DialogNoInternet()
                     internet.show(it, "internet")
                 }
-                binding.loading.visibility = View.GONE
             }
         }
     }

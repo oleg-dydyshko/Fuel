@@ -65,8 +65,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 false
             }
             binding.button7.setOnClickListener {
-                val c: GregorianCalendar
-                c = if (binding.textView7e.text.toString() == "") {
+                val c = if (binding.textView7e.text.toString() == "") {
                     Calendar.getInstance() as GregorianCalendar
                 } else {
                     val t1 = binding.textView7e.text.toString().split("-").toTypedArray()
@@ -78,8 +77,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 }
             }
             binding.button9.setOnClickListener {
-                val c: GregorianCalendar
-                c = if (binding.textView9e.text.toString() == "") {
+                val c = if (binding.textView9e.text.toString() == "") {
                     Calendar.getInstance() as GregorianCalendar
                 } else {
                     val t1 = binding.textView9e.text.toString().split("-").toTypedArray()
@@ -91,8 +89,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 }
             }
             binding.button10.setOnClickListener {
-                val c: GregorianCalendar
-                c = if (binding.textView10e.text.toString() == "") {
+                val c = if (binding.textView10e.text.toString() == "") {
                     Calendar.getInstance() as GregorianCalendar
                 } else {
                     val t1 = binding.textView10e.text.toString().split("-").toTypedArray()
