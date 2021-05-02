@@ -29,6 +29,7 @@ class ReceiverNotification : BroadcastReceiver() {
                 .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_launcher))
                 .setAutoCancel(true)
                 .setContentTitle("Истекает cрок")
+                .setVibrate(longArrayOf(0, 1000))
         if (reaktive) builder.setContentText("Годности реактива") else builder.setContentText("Следующей аттестации, поверки, калибровки")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId("serhij.korneluk.chemlabfuel")
