@@ -22,7 +22,7 @@ import com.google.gson.reflect.TypeToken
 import java.util.*
 
 class DialogJurnal : DialogFragment() {
-    private lateinit var alert:AlertDialog
+    private lateinit var alert: AlertDialog
     private lateinit var jur: ArrayList<ArrayList<String>>
     private lateinit var listAdapter: ArrayAdapter<ArrayList<String>>
     fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
@@ -36,30 +36,28 @@ class DialogJurnal : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        activity?.let { activity ->
+        activity?.let {
             val gson = Gson()
             val type = object : TypeToken<ArrayList<ArrayList<String>>>() {}.type
-            jur = gson.fromJson(arguments?.getString("jurnal")?: "", type)
-            val builder = AlertDialog.Builder(activity)
-            val linearLayout = LinearLayout(activity)
+            jur = gson.fromJson(arguments?.getString("jurnal") ?: "", type)
+            val builder = AlertDialog.Builder(it)
+            val linearLayout = LinearLayout(it)
             linearLayout.orientation = LinearLayout.VERTICAL
-            val textViewZaglavie = TextView(activity)
-            textViewZaglavie.setBackgroundColor(ContextCompat.getColor(activity, R.color.colorPrimary))
+            val textViewZaglavie = TextView(it)
+            textViewZaglavie.setBackgroundColor(ContextCompat.getColor(it, R.color.colorPrimary))
             textViewZaglavie.setPadding(10, 10, 10, 10)
             textViewZaglavie.text = getString(R.string.gurnal_rasxoda)
             textViewZaglavie.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
             textViewZaglavie.setTypeface(null, Typeface.BOLD)
-            textViewZaglavie.setTextColor(ContextCompat.getColor(activity, R.color.colorIcons))
+            textViewZaglavie.setTextColor(ContextCompat.getColor(it, R.color.colorIcons))
             linearLayout.addView(textViewZaglavie)
-            val listView = ListView(activity)
-            listAdapter = ListAdapter(activity)
+            val listView = ListView(it)
+            listAdapter = ListAdapter(it)
             listView.adapter = listAdapter
             listView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, i: Int, _: Long ->
                 val jurnal = gson.toJson(jur)
-                val rasxod: DialodReaktRasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition")?: 0, arguments?.getInt("childposition")?: 0, arguments?.getInt("izmerenie")?: 0, jur[i][5], jurnal, i)
-                fragmentManager?.let {
-                    rasxod.show(it, "rasxod")
-                }
+                val rasxod: DialodReaktRasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i)
+                rasxod.show(childFragmentManager, "rasxod")
             }
             linearLayout.addView(listView)
             builder.setView(linearLayout)
@@ -75,6 +73,7 @@ class DialogJurnal : DialogFragment() {
 
     private inner class ListAdapter(context: Activity) : ArrayAdapter<ArrayList<String>>(context, R.layout.simple_list_item2, jur) {
         private val fuel: SharedPreferences = context.getSharedPreferences("fuel", Context.MODE_PRIVATE)
+
         @SuppressLint("SetTextI18n")
         override fun getView(position: Int, mView: View?, parent: ViewGroup): View {
             val root: View

@@ -1,6 +1,8 @@
 package serhij.korneluk.chemlabfuel
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -22,8 +24,15 @@ class DialogContextMenuReakt : DialogFragment() {
         fun onDialogRemove(groupPosition: Int, childPosition: Int)
     }
 
-    internal fun setDialogContextMenuReaktListener(mListener: DialogContextMenuReaktListener) {
-        this.mListener = mListener
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity) {
+            mListener = try {
+                context as DialogContextMenuReaktListener
+            } catch (e: ClassCastException) {
+                throw ClassCastException("$activity must implement DialogContextMenuReaktListener")
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

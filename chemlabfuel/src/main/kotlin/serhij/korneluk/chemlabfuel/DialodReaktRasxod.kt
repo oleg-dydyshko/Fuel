@@ -68,10 +68,8 @@ class DialodReaktRasxod : DialogFragment() {
             binding.button1.setOnClickListener {
                 val t1 = binding.textView1e.text.toString().split("-").toTypedArray()
                 c = GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
-                fragmentManager?.let {
-                    val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, binding.textView1.text.toString(), 2)
-                    data.show(it, "data")
-                }
+                val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, binding.textView1.text.toString(), 2)
+                data.show(childFragmentManager, "data")
             }
             binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
             binding.textView3e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->

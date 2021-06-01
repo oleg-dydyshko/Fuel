@@ -61,91 +61,85 @@ class DialodOpisanieEditReakt : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        activity?.let { activity ->
-            val builder = AlertDialog.Builder(activity)
-            _binding = DialogOpisanieEditReaktBinding.inflate(LayoutInflater.from(activity))
+        activity?.let {
+            val builder = AlertDialog.Builder(it)
+            _binding = DialogOpisanieEditReaktBinding.inflate(LayoutInflater.from(it))
             builder.setView(binding.root)
-                val god = arrayOf("Год", "Месяц")
-                binding.textView2e.addTextChangedListener(MyTextWatcher(binding.textView2e))
-                binding.spinner9.adapter = ListAdapter(activity, god)
-                binding.spinner11e.adapter = ListAdapter(activity, data)
-                binding.spinner11e.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {}
-                    override fun onNothingSelected(arg0: AdapterView<*>?) {}
-                }
-                binding.textView12e.addTextChangedListener(MyTextWatcher(binding.textView12e))
-                binding.textView13e.addTextChangedListener(MyTextWatcher(binding.textView13e))
-                binding.button3.setOnClickListener {
-                    val c: GregorianCalendar
-                    c = if (binding.textView3e.text.toString() == "") {
-                        Calendar.getInstance() as GregorianCalendar
-                    } else {
-                        val t1 = binding.textView3e.text.toString().split("-").toTypedArray()
-                        GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
-                    }
-                    val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString(), 2)
-                    fragmentManager?.let {
-                        data.show(it, "data")
-                    }
-                }
-                binding.button8.setOnClickListener {
-                    val c: GregorianCalendar
-                    c = if (binding.textView8e.text.toString() == "") {
-                        Calendar.getInstance() as GregorianCalendar
-                    } else {
-                        val t1 = binding.textView8e.text.toString().split("-").toTypedArray()
-                        if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
-                    }
-                    val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString(), 2)
-                    fragmentManager?.let {
-                        data.show(it, "data")
-                    }
-                }
-                user = arguments?.getString("user", "") ?: ""
-                title = arguments?.getString("title", "") ?: ""
-                groupPosition = arguments?.getInt("groupposition", 1) ?: 1
-                childposition = arguments?.getInt("childposition", 1) ?: 1
-                val minostatok = arguments?.getString("minostatok", "") ?: ""
-                edIzmerenia = arguments?.getInt("ed_izmerenia", 0) ?: 0
-                if (add) {
-                    binding.textViewTitle.setText(R.string.add)
-                    binding.textView2e.setText(title)
-                    binding.textView13e.setText(minostatok)
-                    binding.textView13e.imeOptions = EditorInfo.IME_ACTION_GO
-                    binding.textView13e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
-                        if (actionId == EditorInfo.IME_ACTION_GO) {
-                            send()
-                            return@setOnEditorActionListener true
-                        }
-                        false
-                    }
-                    binding.spinner11e.setSelection(edIzmerenia)
+            val god = arrayOf("Год", "Месяц")
+            binding.textView2e.addTextChangedListener(MyTextWatcher(binding.textView2e))
+            binding.spinner9.adapter = ListAdapter(it, god)
+            binding.spinner11e.adapter = ListAdapter(it, data)
+            binding.spinner11e.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {}
+                override fun onNothingSelected(arg0: AdapterView<*>?) {}
+            }
+            binding.textView12e.addTextChangedListener(MyTextWatcher(binding.textView12e))
+            binding.textView13e.addTextChangedListener(MyTextWatcher(binding.textView13e))
+            binding.button3.setOnClickListener {
+                val c = if (binding.textView3e.text.toString() == "") {
+                    Calendar.getInstance() as GregorianCalendar
                 } else {
-                    binding.textView12.setText(R.string.kol_na_ost)
-                    binding.spinner9.visibility = View.GONE
-                    binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
-                    binding.textView2e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
-                    binding.textView3e.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
-                    binding.textView5e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(2))
-                    binding.textView6e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
-                    binding.textView7e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
-                    binding.textView8e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
-                    binding.textView9e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
-                    binding.textView10e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
-                    binding.spinner11e.setSelection(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt() ?: 0)
-                    binding.textView12e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
-                    binding.textView13e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
-                    binding.textView14e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
+                    val t1 = binding.textView3e.text.toString().split("-").toTypedArray()
+                    GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
                 }
-                binding.textView2e.setSelection(binding.textView2e.text.length)
-                binding.textView5e.setSelection(binding.textView5e.text.length)
-                binding.textView6e.setSelection(binding.textView6e.text.length)
-                binding.textView7e.setSelection(binding.textView7e.text.length)
-                binding.textView9e.setSelection(binding.textView9e.text.length)
-                binding.textView10e.setSelection(binding.textView10e.text.length)
-                binding.textView12e.setSelection(binding.textView12e.text.length)
-                binding.textView13e.setSelection(binding.textView13e.text.length)
-                binding.textView14e.setSelection(binding.textView14e.text.length)
+                val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString(), 2)
+                data.show(childFragmentManager, "data")
+            }
+            binding.button8.setOnClickListener {
+                val c = if (binding.textView8e.text.toString() == "") {
+                    Calendar.getInstance() as GregorianCalendar
+                } else {
+                    val t1 = binding.textView8e.text.toString().split("-").toTypedArray()
+                    if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
+                }
+                val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString(), 2)
+                data.show(childFragmentManager, "data")
+            }
+            user = arguments?.getString("user", "") ?: ""
+            title = arguments?.getString("title", "") ?: ""
+            groupPosition = arguments?.getInt("groupposition", 1) ?: 1
+            childposition = arguments?.getInt("childposition", 1) ?: 1
+            val minostatok = arguments?.getString("minostatok", "") ?: ""
+            edIzmerenia = arguments?.getInt("ed_izmerenia", 0) ?: 0
+            if (add) {
+                binding.textViewTitle.setText(R.string.add)
+                binding.textView2e.setText(title)
+                binding.textView13e.setText(minostatok)
+                binding.textView13e.imeOptions = EditorInfo.IME_ACTION_GO
+                binding.textView13e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
+                    if (actionId == EditorInfo.IME_ACTION_GO) {
+                        send()
+                        return@setOnEditorActionListener true
+                    }
+                    false
+                }
+                binding.spinner11e.setSelection(edIzmerenia)
+            } else {
+                binding.textView12.setText(R.string.kol_na_ost)
+                binding.spinner9.visibility = View.GONE
+                binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
+                binding.textView2e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
+                binding.textView3e.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
+                binding.textView5e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(2))
+                binding.textView6e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
+                binding.textView7e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
+                binding.textView8e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
+                binding.textView9e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
+                binding.textView10e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
+                binding.spinner11e.setSelection(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt() ?: 0)
+                binding.textView12e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
+                binding.textView13e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
+                binding.textView14e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
+            }
+            binding.textView2e.setSelection(binding.textView2e.text.length)
+            binding.textView5e.setSelection(binding.textView5e.text.length)
+            binding.textView6e.setSelection(binding.textView6e.text.length)
+            binding.textView7e.setSelection(binding.textView7e.text.length)
+            binding.textView9e.setSelection(binding.textView9e.text.length)
+            binding.textView10e.setSelection(binding.textView10e.text.length)
+            binding.textView12e.setSelection(binding.textView12e.text.length)
+            binding.textView13e.setSelection(binding.textView13e.text.length)
+            binding.textView14e.setSelection(binding.textView14e.text.length)
             builder.setPositiveButton(getString(R.string.save)) { _: DialogInterface?, _: Int -> send() }
             builder.setNegativeButton(getString(R.string.cansel)) { dialog: DialogInterface, _: Int -> dialog.cancel() }
             alert = builder.create()

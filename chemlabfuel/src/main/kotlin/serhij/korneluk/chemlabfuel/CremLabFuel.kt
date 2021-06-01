@@ -8,11 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
-import android.util.SparseArray
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -20,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -29,14 +25,52 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
-import serhij.korneluk.chemlabfuel.DialogData.DialogDataListiner
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelBinding
 
-class CremLabFuel : AppCompatActivity(), DialogDataListiner {
+class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, CremLabFuelTab1.ProgressBarTab1Listener, CremLabFuelTab2.ProgressBarTab2Listener {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
     private lateinit var binding: CremlabfuelBinding
+
+    override fun onProgress(visibility: Int) {
+        binding.progressBar.visibility = visibility
+    }
+
+    override fun onDialogEditPosition(position: Int) {
+        val page = myTabPagerAdapter.getFragment(0) as CremLabFuelTab1
+        page.onDialogEditPosition(position)
+    }
+
+    override fun onDialogDeliteClick(position: Int) {
+        val page = myTabPagerAdapter.getFragment(0) as CremLabFuelTab1
+        page.onDialogDeliteClick(position)
+    }
+
+    override fun onDialogAddPartia(groupPosition: Int) {
+        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
+        page.onDialogAddPartia(groupPosition)
+    }
+
+    override fun onDialogRashod(groupPosition: Int, childPosition: Int) {
+        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
+        page.onDialogRashod(groupPosition, childPosition)
+    }
+
+    override fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
+        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
+        page.onDialogJurnal(groupPosition, childPosition)
+    }
+
+    override fun onDialogEdit(groupPosition: Int, childPosition: Int) {
+        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
+        page.onDialogEdit(groupPosition, childPosition)
+    }
+
+    override fun onDialogRemove(groupPosition: Int, childPosition: Int) {
+        val page = myTabPagerAdapter.getFragment(1) as CremLabFuelTab2
+        page.onDialogRemove(groupPosition, childPosition)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +80,6 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
         mAuth = FirebaseAuth.getInstance()
         myTabPagerAdapter = MyTabPagerAdapter(supportFragmentManager)
         binding.tabPager.adapter = myTabPagerAdapter
-        binding.tabLayout.setupWithViewPager(binding.tabPager)
         if (fuel.getBoolean("oborudovanie", true)) {
             binding.tabPager.currentItem = 0
         } else {
@@ -204,11 +237,8 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
         }
     }
 
-    private inner class MyTabPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val registeredFragments = SparseArray<Fragment>()
-        override fun getCount(): Int {
-            return 2
-        }
+    private inner class MyTabPagerAdapter(fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
+        override fun getCount() = 2
 
         override fun getPageTitle(position: Int): CharSequence {
             return if (position == 0)
@@ -223,25 +253,6 @@ class CremLabFuel : AppCompatActivity(), DialogDataListiner {
             } else {
                 CremLabFuelTab2()
             }
-        }
-
-        override fun getItemPosition(ob: Any): Int {
-            return PagerAdapter.POSITION_NONE
-        }
-
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as Fragment
-            registeredFragments.put(position, fragment)
-            return fragment
-        }
-
-        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            registeredFragments.remove(position)
-            super.destroyItem(container, position, `object`)
-        }
-
-        fun getFragment(key: Int) : Fragment {
-            return registeredFragments.get(key)
         }
     }
 

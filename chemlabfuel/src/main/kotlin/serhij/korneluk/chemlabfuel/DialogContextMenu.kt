@@ -1,6 +1,8 @@
 package serhij.korneluk.chemlabfuel
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -19,8 +21,15 @@ class DialogContextMenu : DialogFragment() {
         fun onDialogDeliteClick(position: Int)
     }
 
-    internal fun setDialogContextMenuListener(mListener: DialogContextMenuListener) {
-        this.mListener = mListener
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity) {
+            mListener = try {
+                context as DialogContextMenuListener
+            } catch (e: ClassCastException) {
+                throw ClassCastException("$activity must implement DialogContextMenuListener")
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

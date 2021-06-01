@@ -42,7 +42,7 @@ class ReaktiveSpisok : Comparable<ReaktiveSpisok> {
 
     override fun compareTo(other: ReaktiveSpisok): Int {
         val sort = fuel.getInt("sort", 0)
-        if (sort == 1) return this.string.toLowerCase(Locale.getDefault()).compareTo(other.string.toLowerCase(Locale.getDefault()))
+        if (sort == 1) return this.string.compareTo(other.string, true)
         if (sort == 2) {
             if (this.data < other.data) {
                 return -1
@@ -56,7 +56,7 @@ class ReaktiveSpisok : Comparable<ReaktiveSpisok> {
             if (this.id < 10) zero = "0"
             var zeroO = ""
             if (other.id < 10) zeroO = "0"
-            return (zero + this.id + ". " + this.string.toLowerCase(Locale.getDefault())).compareTo(zeroO + other.id + ". " + other.string.toLowerCase(Locale.getDefault()))
+            return (zero + this.id + ". " + this.string).compareTo(zeroO + other.id + ". " + other.string, true)
         }
         return 0
     }

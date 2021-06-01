@@ -31,7 +31,7 @@ class DialogData : DialogFragment() {
             listiner = try {
                 context as DialogDataListiner
             } catch (e: ClassCastException) {
-                throw ClassCastException("$context must implement DialogDataListiner")
+                throw ClassCastException("$activity must implement DialogDataListiner")
             }
         }
     }

@@ -1,5 +1,6 @@
 package serhij.korneluk.chemlabfuel
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -19,17 +20,34 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner, DialogContextMenu.DialogContextMenuListener {
+class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
 
     private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
     private lateinit var arrayAdapter: ListAdapter
     private var edit: DialodOpisanieEdit? = null
     private var _binding: CremlabfuelTab1Binding? = null
     private val binding get() = _binding!!
+    private var progressBarTab1Listener: ProgressBarTab1Listener? = null
+
+    interface ProgressBarTab1Listener {
+        fun onProgress(visibility: Int)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        progressBarTab1Listener?.onProgress(View.GONE)
         _binding = null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity) {
+            progressBarTab1Listener = try {
+                context as ProgressBarTab1Listener
+            } catch (e: ClassCastException) {
+                throw ClassCastException("$activity must implement progressBarTab1Listener")
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -37,8 +55,8 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         activity?.let {
             arrayAdapter = ListAdapter(it)
             binding.listView.adapter = arrayAdapter
@@ -84,48 +102,42 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        activity?.let { activity ->
-            fragmentManager?.let {
-                val id = item.itemId
-                if (id == R.id.add) {
-                    if (CremLabFuel.isNetworkAvailable(activity)) {
-                        edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok.size.toLong())
-                        edit?.show(it, "edit")
-                    } else {
-                        val internet = DialogNoInternet()
-                        internet.show(it, "internet")
-                    }
+        activity?.let {
+            val id = item.itemId
+            if (id == R.id.add) {
+                if (CremLabFuel.isNetworkAvailable(it)) {
+                    edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok.size.toLong())
+                    edit?.show(childFragmentManager, "edit")
+                } else {
+                    val internet = DialogNoInternet()
+                    internet.show(childFragmentManager, "internet")
                 }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onDialogDeliteClick(position: Int) {
-        activity?.let { activity ->
-            fragmentManager?.let {
-                if (CremLabFuel.isNetworkAvailable(activity)) {
-                    val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(inventarnySpisok[position].data02, -1, position)
-                    confirm.setDialogDeliteConfirmlistiner(this)
-                    confirm.show(it, "confirm")
-                } else {
-                    val internet = DialogNoInternet()
-                    internet.show(it, "internet")
-                }
+    fun onDialogDeliteClick(position: Int) {
+        activity?.let {
+            if (CremLabFuel.isNetworkAvailable(it)) {
+                val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(inventarnySpisok[position].data02, -1, position)
+                confirm.setDialogDeliteConfirmlistiner(this)
+                confirm.show(childFragmentManager, "confirm")
+            } else {
+                val internet = DialogNoInternet()
+                internet.show(childFragmentManager, "internet")
             }
         }
     }
 
-    override fun onDialogEditPosition(position: Int) {
-        activity?.let { activity ->
-            fragmentManager?.let {
-                if (CremLabFuel.isNetworkAvailable(activity)) {
-                    edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
-                    edit?.show(it, "edit")
-                } else {
-                    val internet = DialogNoInternet()
-                    internet.show(it, "internet")
-                }
+    fun onDialogEditPosition(position: Int) {
+        activity?.let {
+            if (CremLabFuel.isNetworkAvailable(it)) {
+                edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
+                edit?.show(childFragmentManager, "edit")
+            } else {
+                val internet = DialogNoInternet()
+                internet.show(childFragmentManager, "internet")
             }
         }
     }
@@ -169,29 +181,15 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                 }
             }
             val data02 = inventarnySpisok[position].data02
-            val builder = "<strong>Марка, тип</strong><br>" + inventarnySpisok[position].data03 + "<br><br>" +
-                    "<strong>Заводской номер (инв. номер)</strong><br>" + inventarnySpisok[position].data04 + "<br><br>" +
-                    "<strong>Год выпуска (ввода в эксплуатацию)</strong><br>" + inventarnySpisok[position].data05 + "<br><br>" +
-                    "<strong>Периодичность метролог. аттестации, поверки, калибровки, мес.</strong><br>" + inventarnySpisok[position].data06 + "<br><br>" +
-                    "<strong>Дата последней аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data07 + "<br><br>" +
-                    "<strong>Дата следующей аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data08 + "<br><br>" +
-                    "<strong>Дата консервации</strong><br>" + inventarnySpisok[position].data09 + "<br><br>" +
-                    "<strong>Дата расконсервации</strong><br>" + inventarnySpisok[position].data10 + "<br><br>" +
-                    "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" +
-                    "<strong>Примечания</strong><br>" + inventarnySpisok[position].data12 + editedString
-            fragmentManager?.let {
-                val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
-                opisanie.show(it, "opisanie")
-            }
+            val builder = "<strong>Марка, тип</strong><br>" + inventarnySpisok[position].data03 + "<br><br>" + "<strong>Заводской номер (инв. номер)</strong><br>" + inventarnySpisok[position].data04 + "<br><br>" + "<strong>Год выпуска (ввода в эксплуатацию)</strong><br>" + inventarnySpisok[position].data05 + "<br><br>" + "<strong>Периодичность метролог. аттестации, поверки, калибровки, мес.</strong><br>" + inventarnySpisok[position].data06 + "<br><br>" + "<strong>Дата последней аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data07 + "<br><br>" + "<strong>Дата следующей аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data08 + "<br><br>" + "<strong>Дата консервации</strong><br>" + inventarnySpisok[position].data09 + "<br><br>" + "<strong>Дата расконсервации</strong><br>" + inventarnySpisok[position].data10 + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Примечания</strong><br>" + inventarnySpisok[position].data12 + editedString
+            val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
+            opisanie.show(childFragmentManager, "opisanie")
         }
     }
 
     override fun onItemLongClick(parent: AdapterView<*>?, view: View, position: Int, id: Long): Boolean {
-        fragmentManager?.let {
-            val menu: DialogContextMenu = DialogContextMenu.getInstance(position, inventarnySpisok[position].data02)
-            menu.setDialogContextMenuListener(this)
-            menu.show(it, "menu")
-        }
+        val menu: DialogContextMenu = DialogContextMenu.getInstance(position, inventarnySpisok[position].data02)
+        menu.show(childFragmentManager, "menu")
         return true
     }
 
@@ -199,6 +197,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         activity?.let { activity ->
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
+                progressBarTab1Listener?.onProgress(View.VISIBLE)
                 val mDatabase = FirebaseDatabase.getInstance().reference
                 mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -218,15 +217,16 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                         inventarnySpisok.sort()
                         arrayAdapter.notifyDataSetChanged()
                         activity.sendBroadcast(Intent(activity, ReceiverSetAlarm::class.java))
+                        progressBarTab1Listener?.onProgress(View.GONE)
                     }
 
-                    override fun onCancelled(databaseError: DatabaseError) {}
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        progressBarTab1Listener?.onProgress(View.GONE)
+                    }
                 })
             } else {
-                fragmentManager?.let {
-                    val internet = DialogNoInternet()
-                    internet.show(it, "internet")
-                }
+                val internet = DialogNoInternet()
+                internet.show(childFragmentManager, "internet")
             }
         }
     }
