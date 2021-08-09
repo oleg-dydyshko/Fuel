@@ -8,9 +8,9 @@ import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.*
 import serhij.korneluk.chemlabfuel.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -30,23 +30,42 @@ class MainActivity : AppCompatActivity() {
             editor.apply()
         }
         // Initialize Firebase Auth
+        val options = FirebaseOptions.Builder().setApplicationId("lab-react-firebase")
+            .setApiKey("AIzaSyAaZZ7BqCG0oqh_UhDy9C3USYyCU2C-HYk").setDatabaseUrl("https://lab-react-firebase.firebaseio.com")
+            .setStorageBucket("lab-react-firebase.appspot.com").build()
+        FirebaseApp.initializeApp(this, options)
         mAuth = FirebaseAuth.getInstance()
-        binding.login.setOnClickListener {
-            // Скрываем клавиатуру
+        binding.login.setOnClickListener { // Скрываем клавиатуру
             val imm1 = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm1.hideSoftInputFromWindow(binding.username.windowToken, 0)
             email = binding.username.text.toString()
             password1 = binding.password.text.toString()
             if (email != "" && password1 != "") {
-                mAuth.signInWithEmailAndPassword(email, password1).addOnCompleteListener(this@MainActivity) { task: Task<AuthResult?> ->
-                    if (task.isSuccessful) {
-                        val user1 = mAuth.currentUser
-                        updateUI(user1)
-                    } else {
-                        CremLabFuel.setToast(this, getString(R.string.login_password_error))
-                        updateUI(null)
+                mAuth.signInWithEmailAndPassword(email, password1)
+                    .addOnCompleteListener(this@MainActivity) { task: Task<AuthResult?> ->
+                        if (task.isSuccessful) {
+                            val user1 = mAuth.currentUser
+                            updateUI(user1)
+                        } else {
+                            /*try {
+                                throw task.exception!!
+                            }
+                            catch (e: FirebaseAuthEmailException){
+                                Toast.makeText(applicationContext, "Invalid Email", Toast.LENGTH_LONG).show()
+                            }
+                            catch (e: FirebaseAuthInvalidCredentialsException) {
+                                Toast.makeText(applicationContext, "Invalid Password", Toast.LENGTH_LONG).show()
+                            }
+                            catch (e: FirebaseAuthException){
+                                Toast.makeText(applicationContext, "Invalid Credentials", Toast.LENGTH_LONG).show()
+                            }
+                            catch (e: Throwable) {
+                                e.printStackTrace()
+                            }*/
+                            CremLabFuel.setToast(this, getString(R.string.login_password_error))
+                            updateUI(null)
+                        }
                     }
-                }
             } else {
                 CremLabFuel.setToast(this, getString(R.string.login_password_error))
                 updateUI(null)
@@ -54,7 +73,8 @@ class MainActivity : AppCompatActivity() {
         }
         binding.link.isClickable = true
         binding.link.movementMethod = LinkMovementMethod.getInstance()
-        val text = "<a href='https://github.com/oleg-dydyshko/Fuel/blob/master/README.md'>Политика конфиденциальности</a>"
+        val text =
+            "<a href='https://github.com/oleg-dydyshko/Fuel/blob/master/README.md'>Политика конфиденциальности</a>"
         binding.link.text = CremLabFuel.fromHtml(text)
         setTollbarTheme()
     }
@@ -72,7 +92,6 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        // Check if useremail is signed in (non-null) and update UI accordingly.
         val currentUser = mAuth.currentUser
         updateUI(currentUser)
     }
@@ -81,7 +100,9 @@ class MainActivity : AppCompatActivity() {
         if (user != null) {
             val intent = Intent(this, CremLabFuel::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-            if (getIntent().extras != null) intent.putExtra("reaktive", getIntent().extras?.getBoolean("reaktive", false))
+            if (getIntent().extras != null) intent.putExtra(
+                "reaktive", getIntent().extras?.getBoolean("reaktive", false)
+            )
             startActivity(intent)
             finish()
         }

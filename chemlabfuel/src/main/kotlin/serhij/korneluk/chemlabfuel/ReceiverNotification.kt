@@ -19,7 +19,12 @@ class ReceiverNotification : BroadcastReceiver() {
         val notificationIntent = Intent(context, SplashActivity::class.java)
         notificationIntent.putExtra("notifications", true)
         notificationIntent.putExtra("reaktive", reaktive)
-        val contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        val contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, flags)
         val res = context.resources
         var channelId = "2020"
         if (reaktive) channelId = "2030"
