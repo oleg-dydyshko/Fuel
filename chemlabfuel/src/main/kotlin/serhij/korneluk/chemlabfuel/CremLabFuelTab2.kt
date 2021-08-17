@@ -18,7 +18,6 @@ import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab2Binding
 import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
 class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, DialodOpisanieEditReakt.ListUpdateListiner, DialodReaktRasxod.UpdateJurnal, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
@@ -123,7 +122,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     }
 
     override fun deliteData(position: Int, groupPosition: Int) {
-        val mDatabase = FirebaseDatabase.getInstance().reference
+        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
         val arrayList = seash(groupPosition, position)
         if (CremLabFuel.ReaktiveSpisok[arrayList[18].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()
     }
@@ -275,7 +274,7 @@ class CremLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
                 progressBarTab2Listener?.onProgress(View.VISIBLE)
-                val mDatabase = FirebaseDatabase.getInstance().reference
+                val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
                 mDatabase.child("reagents").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         CremLabFuel.ReaktiveSpisok.clear()

@@ -133,7 +133,7 @@ class DialodReaktRasxod : DialogFragment() {
             val nomerPartii = childposition.toString()
             val ras = BigDecimal(binding.textView2e.text.toString().trim().replace(",", "."))
             val rasxod = correkt.subtract(ras)
-            val mDatabase = FirebaseDatabase.getInstance().reference
+            val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(rasxod.toDouble())
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data11").setValue(jur)
             listiner?.updateJurnalRasxoda(position, jur[position][0], jur[position][1], jur[position][2], jur[position][3], jur[position][4], jur[position][5])

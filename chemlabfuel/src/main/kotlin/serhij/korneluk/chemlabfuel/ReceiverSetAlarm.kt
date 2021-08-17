@@ -32,8 +32,8 @@ class ReceiverSetAlarm : BroadcastReceiver() {
     }
 
     private fun task(context: Context) {
-        val mDatabase = FirebaseDatabase.getInstance().reference
-        if (FirebaseAuth.getInstance().currentUser != null) {
+        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+        if (FirebaseAuth.getInstance(CremLabFuelApp.getApp()).currentUser != null) {
             if (CremLabFuel.isNetworkAvailable(context)) {
                 testData.clear()
                 mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
@@ -174,7 +174,12 @@ class ReceiverSetAlarm : BroadcastReceiver() {
 
     private fun removeAlarm(context: Context, requestCode: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pIntent = PendingIntent.getBroadcast(context, requestCode, Intent(context, ReceiverNotification::class.java), 0)
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE or 0
+        } else {
+            0
+        }
+        val pIntent = PendingIntent.getBroadcast(context, requestCode, Intent(context, ReceiverNotification::class.java), flags)
         alarmManager.cancel(pIntent)
     }
 
@@ -193,7 +198,12 @@ class ReceiverSetAlarm : BroadcastReceiver() {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(context, ReceiverNotification::class.java)
             intent.putExtra("reaktive", reaktive)
-            val pIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+            val pIntent = PendingIntent.getBroadcast(context, requestCode, intent, flags)
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)

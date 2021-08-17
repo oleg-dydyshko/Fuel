@@ -177,7 +177,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
         if (binding.textView13e.text.toString().trim() == "") {
             binding.textView13e.setText("0")
         }
-        val mDatabase = FirebaseDatabase.getInstance().reference
+        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
         val g = Calendar.getInstance() as GregorianCalendar
         var nomerProdukta = groupPosition.toString()
         var nomerPartii = childposition.toString()

@@ -8,8 +8,6 @@ import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.*
 import serhij.korneluk.chemlabfuel.databinding.ActivityMainBinding
 
@@ -29,12 +27,7 @@ class MainActivity : AppCompatActivity() {
             editor.putInt("sort", 2)
             editor.apply()
         }
-        // Initialize Firebase Auth
-        val options = FirebaseOptions.Builder().setApplicationId("lab-react-firebase")
-            .setApiKey("AIzaSyAaZZ7BqCG0oqh_UhDy9C3USYyCU2C-HYk").setDatabaseUrl("https://lab-react-firebase.firebaseio.com")
-            .setStorageBucket("lab-react-firebase.appspot.com").build()
-        FirebaseApp.initializeApp(this, options)
-        mAuth = FirebaseAuth.getInstance()
+        mAuth = FirebaseAuth.getInstance(CremLabFuelApp.getApp())
         binding.login.setOnClickListener { // Скрываем клавиатуру
             val imm1 = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm1.hideSoftInputFromWindow(binding.username.windowToken, 0)

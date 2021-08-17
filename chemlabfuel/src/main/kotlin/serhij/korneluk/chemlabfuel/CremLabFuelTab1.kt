@@ -18,7 +18,6 @@ import com.google.firebase.database.ValueEventListener
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab1Binding
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
 
@@ -143,7 +142,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     }
 
     override fun deliteData(position: Int, groupPosition: Int) {
-        val mDatabase = FirebaseDatabase.getInstance().reference
+        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
         inventarnySpisok[position].uid?.let { mDatabase.child("equipments").child(it).removeValue() }
     }
 
@@ -198,7 +197,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
             activity.invalidateOptionsMenu()
             if (CremLabFuel.isNetworkAvailable(activity)) {
                 progressBarTab1Listener?.onProgress(View.VISIBLE)
-                val mDatabase = FirebaseDatabase.getInstance().reference
+                val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
                 mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         inventarnySpisok.clear()

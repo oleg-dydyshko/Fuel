@@ -82,7 +82,7 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner,
         binding = CremlabfuelBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
-        mAuth = FirebaseAuth.getInstance()
+        mAuth = FirebaseAuth.getInstance(CremLabFuelApp.getApp())
         myTabPagerAdapter = MyTabPagerAdapter(this)
         binding.tabPager.adapter = myTabPagerAdapter
         if (fuel.getBoolean("oborudovanie", true)) {
@@ -205,7 +205,7 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner,
         invalidateOptionsMenu()
         if (isNetworkAvailable(this)) {
             val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
-            val mDatabase = FirebaseDatabase.getInstance().reference
+            val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
             mDatabase.child("users").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     for (data in dataSnapshot.children) {
