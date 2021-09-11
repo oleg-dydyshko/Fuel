@@ -16,7 +16,7 @@ class ReceiverNotification : BroadcastReceiver() {
     }
 
     private fun sendNotif(context: Context, reaktive: Boolean) {
-        val notificationIntent = Intent(context, SplashActivity::class.java)
+        val notificationIntent = Intent(context, MainActivity::class.java)
         notificationIntent.putExtra("notifications", true)
         notificationIntent.putExtra("reaktive", reaktive)
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
