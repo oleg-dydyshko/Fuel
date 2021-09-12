@@ -204,14 +204,10 @@ class ReceiverSetAlarm : BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT
             }
             val pIntent = PendingIntent.getBroadcast(context, requestCode, intent, flags)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
-            } else {
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
-                    else -> alarmManager[AlarmManager.RTC_WAKEUP, c.timeInMillis] = pIntent
-                }
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> alarmManager.set(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
+                else -> alarmManager[AlarmManager.RTC_WAKEUP, c.timeInMillis] = pIntent
             }
         }
         testData.add(c[Calendar.YEAR].toString() + "-" + c[Calendar.MONTH] + "-" + c[Calendar.DATE])
