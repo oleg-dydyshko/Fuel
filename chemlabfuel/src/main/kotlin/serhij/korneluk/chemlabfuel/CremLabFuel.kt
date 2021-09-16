@@ -29,10 +29,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelBinding
 
-class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner,
-    DialogContextMenu.DialogContextMenuListener,
-    DialogContextMenuReakt.DialogContextMenuReaktListener, CremLabFuelTab1.ProgressBarTab1Listener,
-    CremLabFuelTab2.ProgressBarTab2Listener {
+class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, CremLabFuelTab1.ProgressBarTab1Listener, CremLabFuelTab2.ProgressBarTab2Listener {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
@@ -216,8 +213,8 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner,
                         for (data2 in data.children) {
                             if (data2.value is HashMap<*, *>) {
                                 val hashMap = data2.value as HashMap<*, *>
-                                val firstname = hashMap["firstName"] as String
-                                val lastname = hashMap["lastName"] as String
+                                val firstname = (hashMap["firstName"] as? String) ?: ""
+                                val lastname = (hashMap["lastName"] as? String) ?: ""
                                 val user = ArrayList<String>()
                                 user.add(key)
                                 user.add(firstname)
@@ -246,8 +243,7 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner,
         }
     }
 
-    private inner class MyTabPagerAdapter(activity: FragmentActivity) :
-        FragmentStateAdapter(activity) {
+    private inner class MyTabPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         override fun getItemCount() = 2
 
         /*override fun getPageTitle(position: Int): CharSequence {
@@ -282,8 +278,7 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner,
 
         @Suppress("DEPRECATION")
         fun isNetworkAvailable(context: Context): Boolean {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val nw = connectivityManager.activeNetwork ?: return false
                 val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
