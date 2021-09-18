@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".CremLabFuelApp"
+        android:name=".ChemLabFuelApp"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:restoreAnyVersion="true"
@@ -33,9 +33,9 @@
             android:label="Настройки">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CremLabFuel" />
+                android:value=".ChemLabFuel" />
         </activity>
-        <activity android:name=".CremLabFuel"
+        <activity android:name=".ChemLabFuel"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/app_main">
             <meta-data

@@ -32,7 +32,7 @@ class DialodOpisanie : DialogFragment() {
             linearLayout.addView(textViewZaglavie)
             val textView = TextView(it)
             textView.setPadding(10, 10, 10, 10)
-            textView.text = CremLabFuel.fromHtml(arguments?.getString("string")?: "")
+            textView.text = ChemLabFuel.fromHtml(arguments?.getString("string")?: "")
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
             textView.setTextColor(ContextCompat.getColor(it, R.color.colorPrimary_text))
             linearLayout.addView(scrollView)

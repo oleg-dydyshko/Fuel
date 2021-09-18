@@ -71,7 +71,7 @@ class DialodReaktRasxod : DialogFragment() {
                 val data: DialogData = DialogData.getInstance(c.timeInMillis, 1, binding.textView1.text.toString(), 2)
                 data.show(childFragmentManager, "data")
             }
-            binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
+            binding.textViewTitle.text = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
             binding.textView3e.setOnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
                 if (actionId == EditorInfo.IME_ACTION_GO) {
                     send()
@@ -89,7 +89,7 @@ class DialodReaktRasxod : DialogFragment() {
                 binding.textView4e.setText(jur[position][3])
                 binding.textView3e.setText(jur[position][4])
             } else {
-                jur = gson.fromJson(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(16), type)
+                jur = gson.fromJson(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(16), type)
             }
             val builder = AlertDialog.Builder(activity)
             builder.setPositiveButton(getString(R.string.save)) { _: DialogInterface?, _: Int -> send() }
@@ -111,7 +111,7 @@ class DialodReaktRasxod : DialogFragment() {
             if (binding.textView4e.text.toString().trim() == "") binding.textView4e.setText("1")
             val correkt: BigDecimal
             if (jurnal == "") {
-                correkt = BigDecimal(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9))
+                correkt = BigDecimal(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9))
                 val subJurnal = ArrayList<String>()
                 subJurnal.add(binding.textView1e.text.toString())
                 subJurnal.add(BigDecimal(binding.textView2e.text.toString().trim().replace(",", ".")).toString().replace(".", ","))
@@ -121,7 +121,7 @@ class DialodReaktRasxod : DialogFragment() {
                 subJurnal.add(user)
                 jur.add(subJurnal)
             } else {
-                correkt = BigDecimal(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9)).add(BigDecimal(jur[position][1].replace(",", ".")))
+                correkt = BigDecimal(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9)).add(BigDecimal(jur[position][1].replace(",", ".")))
                 jur[position][0] = binding.textView1e.text.toString()
                 jur[position][1] = BigDecimal(binding.textView2e.text.toString().trim().replace(",", ".")).toString().replace(".", ",")
                 jur[position][2] = edIzmerenia2[izmerenie]
@@ -133,13 +133,13 @@ class DialodReaktRasxod : DialogFragment() {
             val nomerPartii = childposition.toString()
             val ras = BigDecimal(binding.textView2e.text.toString().trim().replace(",", "."))
             val rasxod = correkt.subtract(ras)
-            val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+            val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(rasxod.toDouble())
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data11").setValue(jur)
             listiner?.updateJurnalRasxoda(position, jur[position][0], jur[position][1], jur[position][2], jur[position][3], jur[position][4], jur[position][5])
         } else {
             activity?.let {
-                CremLabFuel.setToast(it, getString(R.string.error))
+                ChemLabFuel.setToast(getString(R.string.error))
             }
         }
         dialog?.cancel()

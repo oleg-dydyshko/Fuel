@@ -6,8 +6,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -29,7 +28,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelBinding
 
-class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, CremLabFuelTab1.ProgressBarTab1Listener, CremLabFuelTab2.ProgressBarTab2Listener {
+class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, ChemLabFuelTab1.ProgressBarTab1Listener, ChemLabFuelTab2.ProgressBarTab2Listener {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
@@ -40,37 +39,37 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
     }
 
     override fun onDialogEditPosition(position: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 0) as CremLabFuelTab1
+        val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
         page.onDialogEditPosition(position)
     }
 
     override fun onDialogDeliteClick(position: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 0) as CremLabFuelTab1
+        val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
         page.onDialogDeliteClick(position)
     }
 
     override fun onDialogAddPartia(groupPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
         page.onDialogAddPartia(groupPosition)
     }
 
     override fun onDialogRashod(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
         page.onDialogRashod(groupPosition, childPosition)
     }
 
     override fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
         page.onDialogJurnal(groupPosition, childPosition)
     }
 
     override fun onDialogEdit(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
         page.onDialogEdit(groupPosition, childPosition)
     }
 
     override fun onDialogRemove(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
         page.onDialogRemove(groupPosition, childPosition)
     }
 
@@ -79,7 +78,7 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
         binding = CremlabfuelBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
-        mAuth = FirebaseAuth.getInstance(CremLabFuelApp.getApp())
+        mAuth = FirebaseAuth.getInstance(ChemLabFuelApp.getApp())
         myTabPagerAdapter = MyTabPagerAdapter(this)
         binding.tabPager.adapter = myTabPagerAdapter
         if (fuel.getBoolean("oborudovanie", true)) {
@@ -126,10 +125,10 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
 
     override fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int, fragment: Int) {
         if (fragment == 1) {
-            val page = supportFragmentManager.findFragmentByTag("f" + 0) as CremLabFuelTab1
+            val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
             page.setData(textview, year, month, dayOfMonth)
         } else {
-            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
             page2.setData(textview, year, month, dayOfMonth)
         }
     }
@@ -175,9 +174,9 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                 editor.putInt("sort", 1)
                 editor.apply()
             }
-            val page = supportFragmentManager.findFragmentByTag("f" + 0) as CremLabFuelTab1
+            val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
             page.updateSort()
-            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
             page2.updateSort()
         }
         if (id == R.id.sorttime) {
@@ -190,9 +189,9 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                 editor.putInt("sort", 2)
                 editor.apply()
             }
-            val page = supportFragmentManager.findFragmentByTag("f" + 0) as CremLabFuelTab1
+            val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
             page.updateSort()
-            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
             page2.updateSort()
         }
         return super.onOptionsItemSelected(item)
@@ -200,9 +199,9 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
 
     private fun updateUI() {
         invalidateOptionsMenu()
-        if (isNetworkAvailable(this)) {
+        if (isNetworkAvailable()) {
             val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
-            val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+            val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
             mDatabase.child("users").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     for (data in dataSnapshot.children) {
@@ -229,10 +228,10 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                     editor.apply()
                     if (intent.extras?.getBoolean("reaktive", false) == true) {
                         binding.tabPager.currentItem = 1
-                        val page = supportFragmentManager.findFragmentByTag("f" + 1) as CremLabFuelTab2
+                        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
                         page.setExpandGroup()
                     }
-                    sendBroadcast(Intent(this@CremLabFuel, ReceiverSetAlarm::class.java))
+                    sendBroadcast(Intent(this@ChemLabFuel, ReceiverSetAlarm::class.java))
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {}
@@ -246,18 +245,11 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
     private inner class MyTabPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         override fun getItemCount() = 2
 
-        /*override fun getPageTitle(position: Int): CharSequence {
-            return if (position == 0)
-                getString(R.string.oborudovanie)
-            else
-                getString(R.string.reaktivy)
-        }*/
-
         override fun createFragment(position: Int): Fragment {
             return if (position == 0) {
-                CremLabFuelTab1()
+                ChemLabFuelTab1()
             } else {
-                CremLabFuelTab2()
+                ChemLabFuelTab2()
             }
         }
     }
@@ -267,18 +259,11 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
         val ReaktiveSpisok = LinkedHashMap<Int, LinkedHashMap<Int, LinkedHashMap<Int, String>>>()
         var userEdit = ""
 
-        @Suppress("DEPRECATION")
-        fun fromHtml(html: String): Spanned {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                Html.fromHtml(html)
-            }
-        }
+        fun fromHtml(html: String) = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
         @Suppress("DEPRECATION")
-        fun isNetworkAvailable(context: Context): Boolean {
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        fun isNetworkAvailable(): Boolean {
+            val connectivityManager = ChemLabFuelApp.applicationContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val nw = connectivityManager.activeNetwork ?: return false
                 val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
@@ -294,7 +279,8 @@ class CremLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
         }
 
         @Suppress("DEPRECATION")
-        fun setToast(context: Context, message: String) {
+        fun setToast(message: String) {
+            val context = ChemLabFuelApp.applicationContext()
             val layout = LinearLayout(context)
             layout.setBackgroundResource(R.color.colorPrimary)
             val toast = TextView(context)

@@ -209,7 +209,7 @@ class DialodOpisanieEdit : DialogFragment() {
                 data11 = c.timeInMillis
             }
         }
-        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+        val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
         val g = Calendar.getInstance() as GregorianCalendar
         if (add) {
             uid = mDatabase.child("equipments").push().key ?: ""

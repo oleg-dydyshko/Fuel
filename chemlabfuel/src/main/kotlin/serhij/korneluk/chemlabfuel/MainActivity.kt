@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
             editor.putInt("sort", 2)
             editor.apply()
         }
-        mAuth = FirebaseAuth.getInstance(CremLabFuelApp.getApp())
+        mAuth = FirebaseAuth.getInstance(ChemLabFuelApp.getApp())
         binding.login.setOnClickListener { // Скрываем клавиатуру
             val imm1 = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm1.hideSoftInputFromWindow(binding.username.windowToken, 0)
@@ -55,12 +55,12 @@ class MainActivity : AppCompatActivity() {
                             catch (e: Throwable) {
                                 e.printStackTrace()
                             }*/
-                            CremLabFuel.setToast(this, getString(R.string.login_password_error))
+                            ChemLabFuel.setToast(getString(R.string.login_password_error))
                             updateUI(null)
                         }
                     }
             } else {
-                CremLabFuel.setToast(this, getString(R.string.login_password_error))
+                ChemLabFuel.setToast(getString(R.string.login_password_error))
                 updateUI(null)
             }
         }
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         binding.link.movementMethod = LinkMovementMethod.getInstance()
         val text =
             "<a href='https://github.com/oleg-dydyshko/Fuel/blob/master/README.md'>Политика конфиденциальности</a>"
-        binding.link.text = CremLabFuel.fromHtml(text)
+        binding.link.text = ChemLabFuel.fromHtml(text)
         setTollbarTheme()
     }
 
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            val intent = Intent(this, CremLabFuel::class.java)
+            val intent = Intent(this, ChemLabFuel::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
             if (getIntent().extras != null) intent.putExtra(
                 "reaktive", getIntent().extras?.getBoolean("reaktive", false)

@@ -117,19 +117,19 @@ class DialodOpisanieEditReakt : DialogFragment() {
             } else {
                 binding.textView12.setText(R.string.kol_na_ost)
                 binding.spinner9.visibility = View.GONE
-                binding.textViewTitle.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
-                binding.textView2e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
-                binding.textView3e.text = CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
-                binding.textView5e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(2))
-                binding.textView6e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
-                binding.textView7e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
-                binding.textView8e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
-                binding.textView9e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
-                binding.textView10e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
-                binding.spinner11e.setSelection(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt() ?: 0)
-                binding.textView12e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
-                binding.textView13e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
-                binding.textView14e.setText(CremLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
+                binding.textViewTitle.text = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
+                binding.textView2e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
+                binding.textView3e.text = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
+                binding.textView5e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(2))
+                binding.textView6e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
+                binding.textView7e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
+                binding.textView8e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
+                binding.textView9e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
+                binding.textView10e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
+                binding.spinner11e.setSelection(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt() ?: 0)
+                binding.textView12e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
+                binding.textView13e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
+                binding.textView14e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
             }
             binding.textView2e.setSelection(binding.textView2e.text.length)
             binding.textView5e.setSelection(binding.textView5e.text.length)
@@ -177,7 +177,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
         if (binding.textView13e.text.toString().trim() == "") {
             binding.textView13e.setText("0")
         }
-        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+        val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
         val g = Calendar.getInstance() as GregorianCalendar
         var nomerProdukta = groupPosition.toString()
         var nomerPartii = childposition.toString()
@@ -186,8 +186,8 @@ class DialodOpisanieEditReakt : DialogFragment() {
             text9 *= 12
         }
         if (add) {
-            if (CremLabFuel.ReaktiveSpisok.size != 0) {
-                for ((_, value) in CremLabFuel.ReaktiveSpisok.entries) {
+            if (ChemLabFuel.ReaktiveSpisok.size != 0) {
+                for ((_, value) in ChemLabFuel.ReaktiveSpisok.entries) {
                     for ((_, value2) in value.entries) {
                         var name = "no"
                         for ((key, value1) in value2.entries) {

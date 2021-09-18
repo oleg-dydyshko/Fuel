@@ -19,7 +19,7 @@ import serhij.korneluk.chemlabfuel.databinding.CremlabfuelTab1Binding
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
+class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
 
     private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
     private lateinit var arrayAdapter: ListAdapter
@@ -104,8 +104,8 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
         activity?.let {
             val id = item.itemId
             if (id == R.id.add) {
-                if (CremLabFuel.isNetworkAvailable(it)) {
-                    edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok.size.toLong())
+                if (ChemLabFuel.isNetworkAvailable()) {
+                    edit = DialodOpisanieEdit.getInstance(ChemLabFuel.userEdit, inventarnySpisok.size.toLong())
                     edit?.show(childFragmentManager, "edit")
                 } else {
                     val internet = DialogNoInternet()
@@ -118,7 +118,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
 
     fun onDialogDeliteClick(position: Int) {
         activity?.let {
-            if (CremLabFuel.isNetworkAvailable(it)) {
+            if (ChemLabFuel.isNetworkAvailable()) {
                 val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(inventarnySpisok[position].data02, -1, position)
                 confirm.setDialogDeliteConfirmlistiner(this)
                 confirm.show(childFragmentManager, "confirm")
@@ -131,8 +131,8 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
 
     fun onDialogEditPosition(position: Int) {
         activity?.let {
-            if (CremLabFuel.isNetworkAvailable(it)) {
-                edit = DialodOpisanieEdit.getInstance(CremLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
+            if (ChemLabFuel.isNetworkAvailable()) {
+                edit = DialodOpisanieEdit.getInstance(ChemLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
                 edit?.show(childFragmentManager, "edit")
             } else {
                 val internet = DialogNoInternet()
@@ -142,7 +142,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     }
 
     override fun deliteData(position: Int, groupPosition: Int) {
-        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+        val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
         inventarnySpisok[position].uid?.let { mDatabase.child("equipments").child(it).removeValue() }
     }
 
@@ -158,10 +158,10 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
             if (inventarnySpisok[position].editedBy != "") {
                 val edited = inventarnySpisok[position].editedAt
                 val editedBy = inventarnySpisok[position].editedBy
-                for (i in CremLabFuel.users.indices) {
-                    if (CremLabFuel.users[i][0].contains(editedBy ?: "")) {
-                        fn = CremLabFuel.users[i][1]
-                        ln = CremLabFuel.users[i][2]
+                for (i in ChemLabFuel.users.indices) {
+                    if (ChemLabFuel.users[i][0].contains(editedBy ?: "")) {
+                        fn = ChemLabFuel.users[i][1]
+                        ln = ChemLabFuel.users[i][2]
                         break
                     }
                 }
@@ -172,10 +172,10 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                 editedString = " Изменено " + zero + c[Calendar.DATE] + "." + zero2 + (c[Calendar.MONTH] + 1) + "." + c[Calendar.YEAR] + " " + fn + " " + ln
             }
             val createBy = inventarnySpisok[position].createdBy
-            for (i in CremLabFuel.users.indices) {
-                if (CremLabFuel.users[i][0].contains(createBy ?: "")) {
-                    fnG = CremLabFuel.users[i][1]
-                    lnG = CremLabFuel.users[i][2]
+            for (i in ChemLabFuel.users.indices) {
+                if (ChemLabFuel.users[i][0].contains(createBy ?: "")) {
+                    fnG = ChemLabFuel.users[i][1]
+                    lnG = ChemLabFuel.users[i][2]
                     break
                 }
             }
@@ -195,9 +195,9 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     private fun updateUI() {
         activity?.let { activity ->
             activity.invalidateOptionsMenu()
-            if (CremLabFuel.isNetworkAvailable(activity)) {
+            if (ChemLabFuel.isNetworkAvailable()) {
                 progressBarTab1Listener?.onProgress(View.VISIBLE)
-                val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
+                val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
                 mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         inventarnySpisok.clear()
@@ -205,10 +205,8 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                             if (data.value is HashMap<*, *>) {
                                 val hashMap = data.value as HashMap<*, *>
                                 if (hashMap.size > 12) {
-                                    var editedAt = hashMap["editedAt"]
-                                    var editedBy = hashMap["editedBy"]
-                                    if (hashMap["editedAt"] == null) editedAt = 0L
-                                    if (hashMap["editedBy"] == null) editedBy = ""
+                                    val editedAt = hashMap["editedAt"] ?: 0L
+                                    val editedBy = hashMap["editedBy"] ?: ""
                                     inventarnySpisok.add(InventorySpisok(activity, hashMap["createdBy"] as String?, hashMap["data01"] as Long, hashMap["data02"] as String?, hashMap["data03"] as String?, hashMap["data04"] as String?, hashMap["data05"] as String?, hashMap["data06"] as String?, hashMap["data07"] as String?, hashMap["data08"] as String?, hashMap["data09"] as String?, hashMap["data10"] as String?, hashMap["data11"] as Long, hashMap["data12"] as String?, data.key, editedAt as Long, editedBy as String?))
                                 }
                             }
@@ -287,7 +285,7 @@ class CremLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                     }
                 }
             }
-            viewHolder.text?.text = CremLabFuel.fromHtml(inventarnySpisok[position].data01.toString() + ". " + inventarnySpisok[position].data02 + dataLong)
+            viewHolder.text?.text = ChemLabFuel.fromHtml(inventarnySpisok[position].data01.toString() + ". " + inventarnySpisok[position].data02 + dataLong)
             viewHolder.text?.textSize = fuel.getInt("fontsize", 18).toFloat()
             return root
         }

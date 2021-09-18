@@ -32,9 +32,9 @@ class ReceiverSetAlarm : BroadcastReceiver() {
     }
 
     private fun task(context: Context) {
-        val mDatabase = FirebaseDatabase.getInstance(CremLabFuelApp.getApp()).reference
-        if (FirebaseAuth.getInstance(CremLabFuelApp.getApp()).currentUser != null) {
-            if (CremLabFuel.isNetworkAvailable(context)) {
+        val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
+        if (FirebaseAuth.getInstance(ChemLabFuelApp.getApp()).currentUser != null) {
+            if (ChemLabFuel.isNetworkAvailable()) {
                 testData.clear()
                 mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -42,10 +42,8 @@ class ReceiverSetAlarm : BroadcastReceiver() {
                             if (data.value is HashMap<*, *>) {
                                 val hashMap = data.value as HashMap<*, *>
                                 if (hashMap.size > 12) {
-                                    var editedAt = hashMap["editedAt"]
-                                    var editedBy = hashMap["editedBy"]
-                                    if (hashMap["editedAt"] == null) editedAt = 0L
-                                    if (hashMap["editedBy"] == null) editedBy = ""
+                                    val editedAt = hashMap["editedAt"] ?: 0L
+                                    val editedBy = hashMap["editedBy"] ?: ""
                                     inventarnySpisok.add(InventorySpisok(context, hashMap["createdBy"] as String?, hashMap["data01"] as Long, hashMap["data02"] as String?, hashMap["data03"] as String?, hashMap["data04"] as String?, hashMap["data05"] as String?, hashMap["data06"] as String?, hashMap["data07"] as String?, hashMap["data08"] as String?, hashMap["data09"] as String?, hashMap["data10"] as String?, hashMap["data11"] as Long, hashMap["data12"] as String?, data.key, editedAt as Long, editedBy as String?))
                                 }
                             }

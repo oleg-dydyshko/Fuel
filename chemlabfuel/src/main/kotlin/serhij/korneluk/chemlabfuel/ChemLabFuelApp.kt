@@ -5,7 +5,7 @@ import androidx.multidex.MultiDexApplication
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 
-class CremLabFuelApp : MultiDexApplication() {
+class ChemLabFuelApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
@@ -18,7 +18,7 @@ class CremLabFuelApp : MultiDexApplication() {
 
     companion object {
         private var chemlabfuelApp: FirebaseApp? = null
-        private var instance: CremLabFuelApp? = null
+        private var instance: ChemLabFuelApp? = null
 
         fun applicationContext(): Context {
             return instance!!.applicationContext

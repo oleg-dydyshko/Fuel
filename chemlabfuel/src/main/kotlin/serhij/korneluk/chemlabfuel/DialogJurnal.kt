@@ -91,10 +91,10 @@ class DialogJurnal : DialogFragment() {
             val createBy = jur[position][5]
             var fnG = ""
             var lnG = ""
-            for (i2 in CremLabFuel.users.indices) {
-                if (CremLabFuel.users[i2][0].contains(createBy)) {
-                    fnG = CremLabFuel.users[i2][1]
-                    lnG = CremLabFuel.users[i2][2]
+            for (i2 in ChemLabFuel.users.indices) {
+                if (ChemLabFuel.users[i2][0].contains(createBy)) {
+                    fnG = ChemLabFuel.users[i2][1]
+                    lnG = ChemLabFuel.users[i2][2]
                     break
                 }
             }
