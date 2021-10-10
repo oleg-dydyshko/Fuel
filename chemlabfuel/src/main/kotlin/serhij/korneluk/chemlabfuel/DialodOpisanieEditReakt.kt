@@ -69,10 +69,6 @@ class DialodOpisanieEditReakt : DialogFragment() {
             binding.textView2e.addTextChangedListener(MyTextWatcher(binding.textView2e))
             binding.spinner9.adapter = ListAdapter(it, god)
             binding.spinner11e.adapter = ListAdapter(it, data)
-            binding.spinner11e.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {}
-                override fun onNothingSelected(arg0: AdapterView<*>?) {}
-            }
             binding.textView12e.addTextChangedListener(MyTextWatcher(binding.textView12e))
             binding.textView13e.addTextChangedListener(MyTextWatcher(binding.textView13e))
             binding.button3.setOnClickListener {
@@ -82,7 +78,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                     val t1 = binding.textView3e.text.toString().split("-").toTypedArray()
                     GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
                 }
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString(), 2)
+                val data = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString(), 2)
                 data.show(childFragmentManager, "data")
             }
             binding.button8.setOnClickListener {
@@ -92,7 +88,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                     val t1 = binding.textView8e.text.toString().split("-").toTypedArray()
                     if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
                 }
-                val data: DialogData = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString(), 2)
+                val data = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString(), 2)
                 data.show(childFragmentManager, "data")
             }
             user = arguments?.getString("user", "") ?: ""

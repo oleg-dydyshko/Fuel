@@ -28,11 +28,16 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelBinding
 
-class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, ChemLabFuelTab1.ProgressBarTab1Listener, ChemLabFuelTab2.ProgressBarTab2Listener {
+class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, ChemLabFuelTab1.ProgressBarTab1Listener, ChemLabFuelTab2.ProgressBarTab2Listener, DialodReaktRasxod.UpdateJurnal {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
     private lateinit var binding: CremlabfuelBinding
+
+    override fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
+    }
 
     override fun onProgress(visibility: Int) {
         binding.progressBar.visibility = visibility

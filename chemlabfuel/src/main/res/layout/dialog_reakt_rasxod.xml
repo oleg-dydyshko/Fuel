@@ -25,6 +25,15 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textViewOstatok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="@string/kol_na_ost"
+                android:textColor="#FF000000"
+                android:textSize="18sp" />
+
+            <TextView
                 android:id="@+id/textView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -25,6 +25,7 @@ class DialogJurnal : DialogFragment() {
     private lateinit var alert: AlertDialog
     private lateinit var jur: ArrayList<ArrayList<String>>
     private lateinit var listAdapter: ArrayAdapter<ArrayList<String>>
+
     fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
         jur[position][0] = t0
         jur[position][1] = t1
@@ -56,7 +57,7 @@ class DialogJurnal : DialogFragment() {
             listView.adapter = listAdapter
             listView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, i: Int, _: Long ->
                 val jurnal = gson.toJson(jur)
-                val rasxod: DialodReaktRasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i)
+                val rasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i, arguments?.getString("ostatok", "") ?: "0,0")
                 rasxod.show(childFragmentManager, "rasxod")
             }
             linearLayout.addView(listView)
@@ -109,7 +110,7 @@ class DialogJurnal : DialogFragment() {
     }
 
     companion object {
-        fun getInstance(groupPosition: Int, childposition: Int, izmerenie: Int, jurnalText: String?, user: String?): DialogJurnal {
+        fun getInstance(groupPosition: Int, childposition: Int, izmerenie: Int, jurnalText: String?, user: String?, ostatok: String): DialogJurnal {
             val jurnal = DialogJurnal()
             val bundle = Bundle()
             bundle.putInt("groupposition", groupPosition)
@@ -117,6 +118,7 @@ class DialogJurnal : DialogFragment() {
             bundle.putInt("izmerenie", izmerenie)
             bundle.putString("jurnal", jurnalText)
             bundle.putString("user", user)
+            bundle.putString("ostatok", ostatok)
             jurnal.arguments = bundle
             return jurnal
         }

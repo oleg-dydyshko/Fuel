@@ -20,7 +20,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
-class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, DialodOpisanieEditReakt.ListUpdateListiner, DialodReaktRasxod.UpdateJurnal, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
+class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, DialodOpisanieEditReakt.ListUpdateListiner, DialogDeliteConfirm.DialogDeliteConfirmlistiner {
 
     private var edit: DialodOpisanieEdit? = null
     private var rasxod: DialodReaktRasxod? = null
@@ -138,8 +138,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
 
     fun onDialogRashod(groupPosition: Int, childPosition: Int) {
         val arrayList = seash(groupPosition, childPosition)
-        rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), ChemLabFuel.userEdit)
-        rasxod?.setUpdateJurnal(this)
+        rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), ChemLabFuel.userEdit, arrayList[9])
         rasxod?.show(childFragmentManager, "rasxod")
         edit = null
         editReakt = null
@@ -148,7 +147,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
 
     fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
         val arrayList = seash(groupPosition, childPosition)
-        jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], ChemLabFuel.userEdit)
+        jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], ChemLabFuel.userEdit, arrayList[9])
         jurnal?.show(childFragmentManager, "jurnal")
         edit = null
         editReakt = null
@@ -180,8 +179,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         rasxod?.setData(textview, year, month, dayOfMonth)
     }
 
-    override fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
-        if (jurnal != null) jurnal?.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
+    fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
+        jurnal?.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
     }
 
     private fun seash(groupPosition: Int, childPosition: Int): ArrayList<String> {
@@ -488,8 +487,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                 }
                 if (menuItem.itemId == R.id.menu_minus) {
                     val arrayList = seash(groupPosition, childposition)
-                    rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), ChemLabFuel.userEdit)
-                    rasxod?.setUpdateJurnal(this@ChemLabFuelTab2)
+                    rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), ChemLabFuel.userEdit, arrayList[9])
                     rasxod?.show(childFragmentManager, "rasxod")
                     edit = null
                     editReakt = null
@@ -497,7 +495,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                 }
                 if (menuItem.itemId == R.id.menu_jurnal) {
                     val arrayList = seash(groupPosition, childposition)
-                    jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], ChemLabFuel.userEdit)
+                    jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], ChemLabFuel.userEdit, arrayList[9])
                     jurnal?.show(childFragmentManager, "jurnal")
                     edit = null
                     editReakt = null

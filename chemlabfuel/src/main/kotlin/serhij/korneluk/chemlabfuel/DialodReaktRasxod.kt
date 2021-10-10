@@ -1,7 +1,9 @@
 package serhij.korneluk.chemlabfuel
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
@@ -26,6 +29,7 @@ class DialodReaktRasxod : DialogFragment() {
     private var groupPosition = 0
     private var childposition = 0
     private var izmerenie = 0
+    private var ostatok = "0,0"
     private lateinit var c: GregorianCalendar
     private var user = ""
     private val edIzmerenia = arrayOf("килограммах", "миллиграммах", "литрах", "миллилитрах")
@@ -41,8 +45,15 @@ class DialodReaktRasxod : DialogFragment() {
         fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String)
     }
 
-    internal fun setUpdateJurnal(listiner: UpdateJurnal) {
-        this.listiner = listiner
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity) {
+            listiner = try {
+                context as UpdateJurnal
+            } catch (e: ClassCastException) {
+                throw ClassCastException("$context must implement UpdateJurnal")
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -54,15 +65,15 @@ class DialodReaktRasxod : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity?.let { activity ->
             _binding = DialogReaktRasxodBinding.inflate(LayoutInflater.from(activity))
-            if (arguments != null) {
-                groupPosition = arguments?.getInt("groupposition", 1) ?: 1
-                childposition = arguments?.getInt("childposition", 1) ?: 1
-                izmerenie = arguments?.getInt("izmerenie", 0) ?: 0
-                user = arguments?.getString("user", "") ?: ""
-                jurnal = arguments?.getString("jurnal", "") ?: ""
-                position = arguments?.getInt("position", 0) ?: 0
-            }
+            groupPosition = arguments?.getInt("groupposition", 1) ?: 1
+            childposition = arguments?.getInt("childposition", 1) ?: 1
+            izmerenie = arguments?.getInt("izmerenie", 0) ?: 0
+            user = arguments?.getString("user", "") ?: ""
+            jurnal = arguments?.getString("jurnal", "") ?: ""
+            position = arguments?.getInt("position", 0) ?: 0
+            ostatok = arguments?.getString("ostatok", "") ?: "0,0"
             binding.kolkast.text = binding.kolkast.text.toString() + " в " + edIzmerenia[izmerenie]
+            binding.textViewOstatok.text = HtmlCompat.fromHtml(binding.textViewOstatok.text.toString() + ": <strong>" + ostatok.replace(".", ",") + "</strong> " + edIzmerenia2[izmerenie], HtmlCompat.FROM_HTML_MODE_LEGACY)
             c = Calendar.getInstance() as GregorianCalendar
             setData(1, c[Calendar.YEAR], c[Calendar.MONTH], c[Calendar.DATE])
             binding.button1.setOnClickListener {
@@ -174,18 +185,19 @@ class DialodReaktRasxod : DialogFragment() {
     }
 
     companion object {
-        fun getInstance(groupPosition: Int, childposition: Int, izmerenie: Int, user: String?): DialodReaktRasxod {
+        fun getInstance(groupPosition: Int, childposition: Int, izmerenie: Int, user: String?, ostatok: String): DialodReaktRasxod {
             val opisanie = DialodReaktRasxod()
             val bundle = Bundle()
             bundle.putInt("groupposition", groupPosition)
             bundle.putInt("childposition", childposition)
             bundle.putInt("izmerenie", izmerenie)
             bundle.putString("user", user)
+            bundle.putString("ostatok", ostatok)
             opisanie.arguments = bundle
             return opisanie
         }
 
-        fun getInstance(groupPosition: Int, childposition: Int, izmerenie: Int, user: String?, jurnal: String?, position: Int): DialodReaktRasxod {
+        fun getInstance(groupPosition: Int, childposition: Int, izmerenie: Int, user: String?, jurnal: String?, position: Int, ostatok: String): DialodReaktRasxod {
             val opisanie = DialodReaktRasxod()
             val bundle = Bundle()
             bundle.putInt("groupposition", groupPosition)
@@ -194,6 +206,7 @@ class DialodReaktRasxod : DialogFragment() {
             bundle.putString("user", user)
             bundle.putString("jurnal", jurnal)
             bundle.putInt("position", position)
+            bundle.putString("ostatok", ostatok)
             opisanie.arguments = bundle
             return opisanie
         }
