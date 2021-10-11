@@ -28,7 +28,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     private var editReakt: DialodOpisanieEditReakt? = null
     private val spisokGroup = ArrayList<ReaktiveSpisok>()
     private lateinit var arrayAdapter2: ListAdapterReakt
-    private val edIzmerenia = arrayOf("кг.", "мг.", "л.", "мл.")
+    private val edIzmerenia = arrayOf("кг", "мг", "л", "мл")
     private var _binding: CremlabfuelTab2Binding? = null
     private val binding get() = _binding!!
     private var progressBarTab2Listener: ProgressBarTab2Listener? = null
@@ -110,8 +110,6 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                     editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, "", "", 0)
                     editReakt?.setListUpdateListiner(this)
                     editReakt?.show(childFragmentManager, "edit")
-                    edit = null
-                    rasxod = null
                 } else {
                     val internet = DialogNoInternet()
                     internet.show(childFragmentManager, "internet")
@@ -131,27 +129,18 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia)
         editReakt?.setListUpdateListiner(this)
         editReakt?.show(childFragmentManager, "edit")
-        edit = null
-        rasxod = null
-        jurnal = null
     }
 
     fun onDialogRashod(groupPosition: Int, childPosition: Int) {
         val arrayList = seash(groupPosition, childPosition)
         rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), ChemLabFuel.userEdit, arrayList[9])
         rasxod?.show(childFragmentManager, "rasxod")
-        edit = null
-        editReakt = null
-        jurnal = null
     }
 
     fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
         val arrayList = seash(groupPosition, childPosition)
         jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], ChemLabFuel.userEdit, arrayList[9])
         jurnal?.show(childFragmentManager, "jurnal")
-        edit = null
-        editReakt = null
-        rasxod = null
     }
 
     fun onDialogEdit(groupPosition: Int, childPosition: Int) {
@@ -159,9 +148,6 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, arrayList[14].toInt(), arrayList[15].toInt())
         editReakt?.setListUpdateListiner(this)
         editReakt?.show(childFragmentManager, "edit")
-        edit = null
-        rasxod = null
-        jurnal = null
     }
 
     fun onDialogRemove(groupPosition: Int, childPosition: Int) {
@@ -262,7 +248,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         }
         val izmerenie = arrayOf("Килограмм", "Миллиграмм", "Литры", "Миллилитры")
         val data02 = arrayList[13]
-        val builder = "<strong>Партия</strong><br>" + arrayList[15] + "<br><br>" + "<strong>Дата получения</strong><br>" + arrayList[1] + "<br><br>" + "<strong>Поставщик</strong><br>" + arrayList[2] + "<br><br>" + "<strong>Притензии</strong><br>" + arrayList[3] + "<br><br>" + "<strong>Квалификация</strong><br>" + arrayList[4] + "<br><br>" + "<strong>Партия</strong><br>" + arrayList[17] + "<br><br>" + "<strong>Дата изготовления</strong><br>" + arrayList[5] + "<br><br>" + "<strong>Срок хранения</strong><br>" + arrayList[6] + "<br><br>" + "<strong>Условия хранения</strong><br>" + arrayList[7] + "<br><br>" + "<strong>Единица измерения</strong><br>" + izmerenie[arrayList[8].toInt()] + "<br><br>" + "<strong>Количество на остатке</strong><br>" + arrayList[9].replace(".", ",") + "<br><br>" + "<strong>Минимальное количество</strong><br>" + arrayList[10].replace(".", ",") + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Изменено</strong><br>" + editedString
+        val builder = "<strong>Партия</strong><br>" + arrayList[15] + "<br><br>" + "<strong>Дата получения</strong><br>" + arrayList[1] + "<br><br>" + "<strong>Поставщик</strong><br>" + arrayList[2] + "<br><br>" + "<strong>Претензии</strong><br>" + arrayList[3] + "<br><br>" + "<strong>Квалификация</strong><br>" + arrayList[4] + "<br><br>" + "<strong>Партия</strong><br>" + arrayList[17] + "<br><br>" + "<strong>Дата изготовления</strong><br>" + arrayList[5] + "<br><br>" + "<strong>Срок хранения</strong><br>" + arrayList[6] + "<br><br>" + "<strong>Условия хранения</strong><br>" + arrayList[7] + "<br><br>" + "<strong>Единица измерения</strong><br>" + izmerenie[arrayList[8].toInt()] + "<br><br>" + "<strong>Количество на остатке</strong><br>" + arrayList[9].replace(".", ",") + "<br><br>" + "<strong>Минимальное количество</strong><br>" + arrayList[10].replace(".", ",") + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Изменено</strong><br>" + editedString
         val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
         opisanie.show(childFragmentManager, "opisanie")
         return false
@@ -480,35 +466,23 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                     editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia)
                     editReakt?.setListUpdateListiner(this@ChemLabFuelTab2)
                     editReakt?.show(childFragmentManager, "edit")
-                    edit = null
-                    rasxod = null
-                    jurnal = null
                     return@setOnMenuItemClickListener true
                 }
                 if (menuItem.itemId == R.id.menu_minus) {
                     val arrayList = seash(groupPosition, childposition)
                     rasxod = DialodReaktRasxod.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), ChemLabFuel.userEdit, arrayList[9])
                     rasxod?.show(childFragmentManager, "rasxod")
-                    edit = null
-                    editReakt = null
-                    jurnal = null
                 }
                 if (menuItem.itemId == R.id.menu_jurnal) {
                     val arrayList = seash(groupPosition, childposition)
                     jurnal = DialogJurnal.getInstance(arrayList[14].toInt(), arrayList[15].toInt(), arrayList[8].toInt(), arrayList[16], ChemLabFuel.userEdit, arrayList[9])
                     jurnal?.show(childFragmentManager, "jurnal")
-                    edit = null
-                    editReakt = null
-                    rasxod = null
                 }
                 if (menuItem.itemId == R.id.menu_redoktor) {
                     val arrayList = seash(groupPosition, childposition)
                     editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, arrayList[14].toInt(), arrayList[15].toInt())
                     editReakt?.setListUpdateListiner(this@ChemLabFuelTab2)
                     editReakt?.show(childFragmentManager, "edit")
-                    edit = null
-                    rasxod = null
-                    jurnal = null
                     return@setOnMenuItemClickListener true
                 }
                 if (menuItem.itemId == R.id.menu_remove) {

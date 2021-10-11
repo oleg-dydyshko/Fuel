@@ -19,12 +19,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.*
 
 class DialogJurnal : DialogFragment() {
     private lateinit var alert: AlertDialog
     private lateinit var jur: ArrayList<ArrayList<String>>
-    private lateinit var listAdapter: ArrayAdapter<ArrayList<String>>
+    private lateinit var listAdapter: ArrayAdapter<DataFuel>
+    private var octatok = "0,0"
+    private val listData = ArrayList<DataFuel>()
 
     fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
         jur[position][0] = t0
@@ -33,7 +34,19 @@ class DialogJurnal : DialogFragment() {
         jur[position][3] = t3
         jur[position][4] = t4
         jur[position][5] = t5
+        setOctatok()
         listAdapter.notifyDataSetChanged()
+    }
+
+    private fun setOctatok() {
+        var ostatokAll = octatok.toFloat()
+        jur.forEach { arrayList ->
+            ostatokAll += arrayList[1].replace(",", ".").toFloat()
+        }
+        jur.forEach { arrayList ->
+            ostatokAll -= arrayList[1].replace(",", ".").toFloat()
+            listData.add(DataFuel(arrayList[0], arrayList[1], arrayList[2], arrayList[3], arrayList[4], arrayList[5], ostatokAll))
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -41,6 +54,8 @@ class DialogJurnal : DialogFragment() {
             val gson = Gson()
             val type = object : TypeToken<ArrayList<ArrayList<String>>>() {}.type
             jur = gson.fromJson(arguments?.getString("jurnal") ?: "", type)
+            octatok = arguments?.getString("ostatok", "") ?: "0,0"
+            setOctatok()
             val builder = AlertDialog.Builder(it)
             val linearLayout = LinearLayout(it)
             linearLayout.orientation = LinearLayout.VERTICAL
@@ -57,7 +72,7 @@ class DialogJurnal : DialogFragment() {
             listView.adapter = listAdapter
             listView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, i: Int, _: Long ->
                 val jurnal = gson.toJson(jur)
-                val rasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i, arguments?.getString("ostatok", "") ?: "0,0")
+                val rasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i, octatok)
                 rasxod.show(childFragmentManager, "rasxod")
             }
             linearLayout.addView(listView)
@@ -72,7 +87,7 @@ class DialogJurnal : DialogFragment() {
         return alert
     }
 
-    private inner class ListAdapter(context: Activity) : ArrayAdapter<ArrayList<String>>(context, R.layout.simple_list_item2, jur) {
+    private inner class ListAdapter(context: Activity) : ArrayAdapter<DataFuel>(context, R.layout.simple_list_item2, listData) {
         private val fuel: SharedPreferences = context.getSharedPreferences("fuel", Context.MODE_PRIVATE)
 
         @SuppressLint("SetTextI18n")
@@ -89,7 +104,7 @@ class DialogJurnal : DialogFragment() {
                 root = mView
                 viewHolder = root.tag as ViewHolder
             }
-            val createBy = jur[position][5]
+            val createBy = listData[position].autor
             var fnG = ""
             var lnG = ""
             for (i2 in ChemLabFuel.users.indices) {
@@ -99,11 +114,13 @@ class DialogJurnal : DialogFragment() {
                     break
                 }
             }
-            viewHolder.text?.text = jur[position][0] + "\n" + jur[position][1] + " " + jur[position][2] + "\nПлотность: " + jur[position][3] + "\nНа цель: " + jur[position][4] + "\nЗапись внёс: " + fnG + " " + lnG
+            viewHolder.text?.text = listData[position].data + "\nРасход: " + listData[position].ostatok + " " + listData[position].izmerenie + "\nОстаток: " + listData[position].oststokAll + "\nПлотность: " + listData[position].plotnoct + "\nНа цель: " + listData[position].cel + "\nЗапись внёс: " + fnG + " " + lnG
             viewHolder.text?.textSize = fuel.getInt("fontsize", 18).toFloat()
             return root
         }
     }
+
+    private data class DataFuel(val data: String, val ostatok: String, val izmerenie: String, val plotnoct: String, val cel: String, val autor: String, val oststokAll: Float)
 
     private class ViewHolder {
         var text: TextView? = null
