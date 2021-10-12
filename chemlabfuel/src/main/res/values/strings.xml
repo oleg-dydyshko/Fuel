@@ -59,5 +59,28 @@
     <string name="no_data">Нет даты</string>
     <string name="kol_na_ost">Количество на остатке</string>
     <string name="login_password_error">Неверный логин или пароль</string>
+    <string name="nomer_reaktiva">Номер реактива</string>
+    <string-array name="izmerenie">
+        <item>Килограмм</item>
+        <item>Миллиграмм</item>
+        <item>Литры</item>
+        <item>Миллилитры</item>
+        <item>Грамм</item>
+        <item>Декалитр</item>
+        <item>Флакон</item>
+        <item>Ампула</item>
+        <item>Штука</item>
+    </string-array>
+    <string-array name="izmerenie_smoll">
+        <item>кг</item>
+        <item>мг</item>
+        <item>л</item>
+        <item>мл</item>
+        <item>г</item>
+        <item>дал</item>
+        <item>фл.</item>
+        <item>амп.</item>
+        <item>шт.</item>
+    </string-array>
     <!--%1$s is a string and %2$d is a decimal number-->
 </resources>

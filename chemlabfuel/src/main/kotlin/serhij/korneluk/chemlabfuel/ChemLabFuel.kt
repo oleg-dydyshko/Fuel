@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import serhij.korneluk.chemlabfuel.databinding.CremlabfuelBinding
 
-class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, ChemLabFuelTab1.ProgressBarTab1Listener, ChemLabFuelTab2.ProgressBarTab2Listener, DialodReaktRasxod.UpdateJurnal {
+class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogContextMenu.DialogContextMenuListener, DialogContextMenuReakt.DialogContextMenuReaktListener, ChemLabFuelTab1.ProgressBarTab1Listener, ChemLabFuelTab2.ProgressBarTab2Listener, DialodReaktRasxod.UpdateJurnal, DialogJurnal.DialogJurnalListener {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myTabPagerAdapter: MyTabPagerAdapter
@@ -76,6 +76,11 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
     override fun onDialogRemove(groupPosition: Int, childPosition: Int) {
         val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
         page.onDialogRemove(groupPosition, childPosition)
+    }
+
+    override fun setDialogJurnal(groupposition: Int, childposition: Int, izmerenie: Int, s: String, jurnal: String, i3: Int, octatok: String) {
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
+        page.setDialogJurnal(groupposition, childposition, izmerenie, s, jurnal, i3, octatok)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

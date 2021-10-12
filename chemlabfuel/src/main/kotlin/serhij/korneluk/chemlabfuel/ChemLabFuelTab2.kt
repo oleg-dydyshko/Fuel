@@ -28,7 +28,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     private var editReakt: DialodOpisanieEditReakt? = null
     private val spisokGroup = ArrayList<ReaktiveSpisok>()
     private lateinit var arrayAdapter2: ListAdapterReakt
-    private val edIzmerenia = arrayOf("кг", "мг", "л", "мл")
+    private val edIzmerenia: Array<out String>
+        get() = ChemLabFuelApp.applicationContext().resources.getStringArray(R.array.izmerenie_smoll)
     private var _binding: CremlabfuelTab2Binding? = null
     private val binding get() = _binding!!
     private var progressBarTab2Listener: ProgressBarTab2Listener? = null
@@ -122,7 +123,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     override fun deliteData(position: Int, groupPosition: Int) {
         val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
         val arrayList = seash(groupPosition, position)
-        if (ChemLabFuel.ReaktiveSpisok[arrayList[18].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()
+        if (ChemLabFuel.ReaktiveSpisok[arrayList[19].toInt()]?.size == 1) mDatabase.child("reagents").child(arrayList[14]).removeValue() else mDatabase.child("reagents").child(arrayList[14]).child(arrayList[15]).removeValue()
     }
 
     fun onDialogAddPartia(groupPosition: Int) {
@@ -165,6 +166,11 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         rasxod?.setData(textview, year, month, dayOfMonth)
     }
 
+    fun setDialogJurnal(groupposition: Int, childposition: Int, izmerenie: Int, s: String, jurnal: String, i3: Int, octatok: String) {
+        rasxod = DialodReaktRasxod.getInstance(groupposition, childposition, izmerenie, s, jurnal, i3, octatok)
+        rasxod?.show(childFragmentManager, "rasxod")
+    }
+
     fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
         jurnal?.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
     }
@@ -179,24 +185,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             for ((_, value2) in value) {
                 arrayList.clear()
                 for ((key1, value1) in value2) {
-                    if (key1 == 0) arrayList.add(value1)
-                    if (key1 == 1) arrayList.add(value1)
-                    if (key1 == 2) arrayList.add(value1)
-                    if (key1 == 3) arrayList.add(value1)
-                    if (key1 == 4) arrayList.add(value1)
-                    if (key1 == 5) arrayList.add(value1)
-                    if (key1 == 6) arrayList.add(value1)
-                    if (key1 == 7) arrayList.add(value1)
-                    if (key1 == 8) arrayList.add(value1)
-                    if (key1 == 9) arrayList.add(value1)
-                    if (key1 == 10) arrayList.add(value1)
-                    if (key1 == 11) arrayList.add(value1)
-                    if (key1 == 12) arrayList.add(value1)
-                    if (key1 == 13) arrayList.add(value1)
-                    if (key1 == 14) arrayList.add(value1)
-                    if (key1 == 15) arrayList.add(value1)
-                    if (key1 == 16) arrayList.add(value1)
-                    if (key1 == 17) arrayList.add(value1)
+                    arrayList.add(key1, value1)
                 }
                 if (group.contains(arrayList[13]) && child.contains(arrayList[15])) {
                     arrayList.add(key.toString())
@@ -276,6 +265,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                             val srokToDay = g.timeInMillis
                             var data05b: Long = 0
                             var data08 = 0
+                            var data13 = ""
                             for (data2 in data.children) {
                                 var srok = ""
                                 var i = 0
@@ -289,8 +279,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         if (editedBy == null) editedBy = ""
                                         var data11 = data2.child("data11").value
                                         if (data11 == null) data11 = ArrayList<Any>()
-                                        var data12 = data2.child("data12").value
-                                        if (data12 == null) data12 = ""
+                                        val data12 = data2.child("data12").value as? String ?: ""
+                                        data13 = data2.child("data13").value as? String ?: ""
                                         spisoks[i] = data2.child("createdBy").value as String //0
                                         i++
                                         spisoks[i] = data2.child("data01").value as String //1
@@ -325,7 +315,9 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         i++
                                         spisoks[i] = gson.toJson(data11) //16
                                         i++
-                                        spisoks[i] = data12.toString() //17
+                                        spisoks[i] = data12 //17
+                                        i++
+                                        spisoks[i] = data13 //18
                                         data2.key?.let {
                                             spisokN[it.toInt()] = spisoks
                                         }
@@ -348,7 +340,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                     }
                                 }
                             }
-                            spisokGroup.add(ReaktiveSpisok(activity, data05b, id.toInt(), name, ostatokSum, minostatok, data08, spisokChild))
+                            spisokGroup.add(ReaktiveSpisok(activity, data05b, id.toInt(), name, ostatokSum, minostatok, data08, spisokChild, data13))
                             ChemLabFuel.ReaktiveSpisok[id.toInt()] = spisokN
                         }
                         spisokGroup.sort()
@@ -425,7 +417,9 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             var ostatok = " (Остаток: " + spisokGroup[groupPosition].ostatok.toString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + ")"
             val compare = spisokGroup[groupPosition].ostatok?.compareTo(spisokGroup[groupPosition].minostatok)
             if (spisokGroup[groupPosition].ostatok == BigDecimal.ZERO) ostatok = " <font color=#9a2828>Срок истёк</font>" else if (compare != null && compare <= 0) ostatok = " (<font color=#9a2828>Остаток: " + spisokGroup[groupPosition].ostatok.toString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + "</font>)"
-            group.text?.text = ChemLabFuel.fromHtml(spisokGroup[groupPosition].id.toString() + ". " + spisokGroup[groupPosition].string + ostatok)
+            val id = if (spisokGroup[groupPosition].userID == "") spisokGroup[groupPosition].id.toString()
+            else spisokGroup[groupPosition].userID
+            group.text?.text = ChemLabFuel.fromHtml(id + ". " + spisokGroup[groupPosition].string + ostatok)
             return root
         }
 

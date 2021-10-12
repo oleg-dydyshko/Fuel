@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
@@ -31,7 +30,8 @@ class DialodOpisanieEditReakt : DialogFragment() {
     private var groupPosition = 0
     private var childposition = 0
     private var edIzmerenia = 0
-    private val data = arrayOf("Килограмм", "Миллиграмм", "Литры", "Миллилитры")
+    private val data: Array<out String>
+        get() = ChemLabFuelApp.applicationContext().resources.getStringArray(R.array.izmerenie)
     private var listiner: ListUpdateListiner? = null
     private var _binding: DialogOpisanieEditReaktBinding? = null
     private val binding get() = _binding!!
@@ -126,6 +126,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                 binding.textView12e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
                 binding.textView13e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(10).toString())
                 binding.textView14e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(17).toString())
+                binding.textViewIde.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(18).toString())
             }
             binding.textView2e.setSelection(binding.textView2e.text.length)
             binding.textView5e.setSelection(binding.textView5e.text.length)
@@ -224,6 +225,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(java.lang.Double.valueOf(binding.textView12e.text.toString().trim().replace(",", ".")))
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(java.lang.Double.valueOf(binding.textView13e.text.toString().trim().replace(",", ".")))
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data12").setValue(binding.textView14e.text.toString().trim())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data13").setValue(binding.textViewIde.text.toString().trim())
         if (!add) {
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedAt").setValue(g.timeInMillis)
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedBy").setValue(user)
@@ -257,7 +259,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
 
     }
 
-    private inner class ListAdapter(context: Context, private val dataA: Array<String>) : ArrayAdapter<String?>(context, R.layout.simple_list_item2, dataA) {
+    private inner class ListAdapter(context: Context, private val dataA: Array<out String>) : ArrayAdapter<String>(context, R.layout.simple_list_item2, dataA) {
         override fun getView(position: Int, mView: View?, parent: ViewGroup): View {
             val root: View
             val viewHolder: ViewHolder

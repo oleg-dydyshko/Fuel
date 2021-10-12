@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.math.BigDecimal
 
 class DialogJurnal : DialogFragment() {
     private lateinit var alert: AlertDialog
@@ -26,6 +27,22 @@ class DialogJurnal : DialogFragment() {
     private lateinit var listAdapter: ArrayAdapter<DataFuel>
     private var octatok = "0,0"
     private val listData = ArrayList<DataFuel>()
+    private var listiner: DialogJurnalListener? = null
+
+    interface DialogJurnalListener {
+        fun setDialogJurnal(groupposition: Int, childposition: Int, izmerenie: Int, s: String, jurnal: String, i3: Int, octatok: String)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity) {
+            listiner = try {
+                context as DialogJurnalListener
+            } catch (e: ClassCastException) {
+                throw ClassCastException("$activity must implement DialogJurnalListener")
+            }
+        }
+    }
 
     fun updateJurnalRasxoda(position: Int, t0: String, t1: String, t2: String, t3: String, t4: String, t5: String) {
         jur[position][0] = t0
@@ -34,17 +51,19 @@ class DialogJurnal : DialogFragment() {
         jur[position][3] = t3
         jur[position][4] = t4
         jur[position][5] = t5
-        setOctatok()
         listAdapter.notifyDataSetChanged()
     }
 
     private fun setOctatok() {
-        var ostatokAll = octatok.toFloat()
+        var ostatokAll = BigDecimal(octatok.toDouble())
+        ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP)
         jur.forEach { arrayList ->
-            ostatokAll += arrayList[1].replace(",", ".").toFloat()
+            ostatokAll = ostatokAll.add(BigDecimal.valueOf(arrayList[1].replace(",", ".").toDouble()))
+            ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP)
         }
         jur.forEach { arrayList ->
-            ostatokAll -= arrayList[1].replace(",", ".").toFloat()
+            ostatokAll = ostatokAll.subtract(BigDecimal.valueOf(arrayList[1].replace(",", ".").toDouble()))
+            ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP)
             listData.add(DataFuel(arrayList[0], arrayList[1], arrayList[2], arrayList[3], arrayList[4], arrayList[5], ostatokAll))
         }
     }
@@ -72,8 +91,7 @@ class DialogJurnal : DialogFragment() {
             listView.adapter = listAdapter
             listView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, i: Int, _: Long ->
                 val jurnal = gson.toJson(jur)
-                val rasxod = DialodReaktRasxod.getInstance(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i, octatok)
-                rasxod.show(childFragmentManager, "rasxod")
+                listiner?.setDialogJurnal(arguments?.getInt("groupposition") ?: 0, arguments?.getInt("childposition") ?: 0, arguments?.getInt("izmerenie") ?: 0, jur[i][5], jurnal, i, octatok)
             }
             linearLayout.addView(listView)
             builder.setView(linearLayout)
@@ -120,7 +138,7 @@ class DialogJurnal : DialogFragment() {
         }
     }
 
-    private data class DataFuel(val data: String, val ostatok: String, val izmerenie: String, val plotnoct: String, val cel: String, val autor: String, val oststokAll: Float)
+    private data class DataFuel(val data: String, val ostatok: String, val izmerenie: String, val plotnoct: String, val cel: String, val autor: String, val oststokAll: BigDecimal)
 
     private class ViewHolder {
         var text: TextView? = null
