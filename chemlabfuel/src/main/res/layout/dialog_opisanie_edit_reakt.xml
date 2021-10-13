@@ -37,6 +37,7 @@
                 android:id="@+id/textViewIde"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/auto_id"
                 android:inputType="text"
                 android:textColor="#FF000000"
                 android:textSize="18sp" />

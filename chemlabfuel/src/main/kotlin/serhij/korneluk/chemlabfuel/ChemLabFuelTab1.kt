@@ -23,7 +23,6 @@ class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
 
     private var inventarnySpisok: ArrayList<InventorySpisok> = ArrayList()
     private lateinit var arrayAdapter: ListAdapter
-    private var edit: DialodOpisanieEdit? = null
     private var _binding: CremlabfuelTab1Binding? = null
     private val binding get() = _binding!!
     private var progressBarTab1Listener: ProgressBarTab1Listener? = null
@@ -71,6 +70,7 @@ class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     }
 
     fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
+        val edit = childFragmentManager.findFragmentByTag("edit") as? DialodOpisanieEdit
         edit?.setData(textview, year, month, dayOfMonth)
     }
 
@@ -105,8 +105,8 @@ class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
             val id = item.itemId
             if (id == R.id.add) {
                 if (ChemLabFuel.isNetworkAvailable()) {
-                    edit = DialodOpisanieEdit.getInstance(ChemLabFuel.userEdit, inventarnySpisok.size.toLong())
-                    edit?.show(childFragmentManager, "edit")
+                    val edit = DialodOpisanieEdit.getInstance(ChemLabFuel.userEdit, inventarnySpisok.size.toLong())
+                    edit.show(childFragmentManager, "edit")
                 } else {
                     val internet = DialogNoInternet()
                     internet.show(childFragmentManager, "internet")
@@ -132,8 +132,8 @@ class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
     fun onDialogEditPosition(position: Int) {
         activity?.let {
             if (ChemLabFuel.isNetworkAvailable()) {
-                edit = DialodOpisanieEdit.getInstance(ChemLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
-                edit?.show(childFragmentManager, "edit")
+                val edit = DialodOpisanieEdit.getInstance(ChemLabFuel.userEdit, inventarnySpisok[position].uid, inventarnySpisok[position].data02, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, inventarnySpisok[position].data12)
+                edit.show(childFragmentManager, "edit")
             } else {
                 val internet = DialogNoInternet()
                 internet.show(childFragmentManager, "internet")

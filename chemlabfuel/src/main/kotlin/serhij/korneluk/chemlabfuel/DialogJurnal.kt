@@ -28,6 +28,7 @@ class DialogJurnal : DialogFragment() {
     private var octatok = "0,0"
     private val listData = ArrayList<DataFuel>()
     private var listiner: DialogJurnalListener? = null
+    private var ostatokAll = "0"
 
     interface DialogJurnalListener {
         fun setDialogJurnal(groupposition: Int, childposition: Int, izmerenie: Int, s: String, jurnal: String, i3: Int, octatok: String)
@@ -51,20 +52,27 @@ class DialogJurnal : DialogFragment() {
         jur[position][3] = t3
         jur[position][4] = t4
         jur[position][5] = t5
+        listData.clear()
+        setOctatok()
         listAdapter.notifyDataSetChanged()
     }
 
-    private fun setOctatok() {
+    private fun setTotalReaktiv(): String {
         var ostatokAll = BigDecimal(octatok.toDouble())
         ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
         jur.forEach { arrayList ->
             ostatokAll = ostatokAll.add(BigDecimal.valueOf(arrayList[1].replace(",", ".").toDouble()))
             ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
         }
+        return ostatokAll.toPlainString()
+    }
+
+    private fun setOctatok() {
+        var ostatokAll = BigDecimal(ostatokAll)
         jur.forEach { arrayList ->
             ostatokAll = ostatokAll.subtract(BigDecimal.valueOf(arrayList[1].replace(",", ".").toDouble()))
             ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
-            listData.add(DataFuel(arrayList[0], arrayList[1], arrayList[2], arrayList[3], arrayList[4], arrayList[5], ostatokAll))
+            listData.add(DataFuel(arrayList[0], arrayList[1], arrayList[2], arrayList[3], arrayList[4], arrayList[5], ostatokAll.toPlainString()))
         }
     }
 
@@ -74,6 +82,11 @@ class DialogJurnal : DialogFragment() {
             val type = object : TypeToken<ArrayList<ArrayList<String>>>() {}.type
             jur = gson.fromJson(arguments?.getString("jurnal") ?: "", type)
             octatok = arguments?.getString("ostatok", "") ?: "0,0"
+            ostatokAll = if (savedInstanceState != null) {
+                savedInstanceState.getString("ostatokAll", "0")
+            } else {
+                setTotalReaktiv()
+            }
             setOctatok()
             val builder = AlertDialog.Builder(it)
             val linearLayout = LinearLayout(it)
@@ -138,10 +151,15 @@ class DialogJurnal : DialogFragment() {
         }
     }
 
-    private data class DataFuel(val data: String, val ostatok: String, val izmerenie: String, val plotnoct: String, val cel: String, val autor: String, val oststokAll: BigDecimal)
+    private data class DataFuel(val data: String, val ostatok: String, val izmerenie: String, val plotnoct: String, val cel: String, val autor: String, val oststokAll: String)
 
     private class ViewHolder {
         var text: TextView? = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("ostatokAll", ostatokAll)
     }
 
     companion object {
