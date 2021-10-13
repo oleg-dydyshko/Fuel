@@ -56,14 +56,14 @@ class DialogJurnal : DialogFragment() {
 
     private fun setOctatok() {
         var ostatokAll = BigDecimal(octatok.toDouble())
-        ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP)
+        ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
         jur.forEach { arrayList ->
             ostatokAll = ostatokAll.add(BigDecimal.valueOf(arrayList[1].replace(",", ".").toDouble()))
-            ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP)
+            ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
         }
         jur.forEach { arrayList ->
             ostatokAll = ostatokAll.subtract(BigDecimal.valueOf(arrayList[1].replace(",", ".").toDouble()))
-            ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP)
+            ostatokAll = ostatokAll.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
             listData.add(DataFuel(arrayList[0], arrayList[1], arrayList[2], arrayList[3], arrayList[4], arrayList[5], ostatokAll))
         }
     }
