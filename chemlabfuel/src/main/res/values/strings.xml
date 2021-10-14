@@ -36,7 +36,7 @@
     <string name="oborudovanie">Оборудование</string>
     <string name="reaktivy">Реактивы</string>
     <string name="name_reaktiv">Наименование реактива</string>
-    <string name="partia">Партия</string>
+    <string name="partia">Номер партии</string>
     <string name="postavcik">Поставщик</string>
     <string name="input_data">Дата получения</string>
     <string name="pritenzii">Претензии</string>
@@ -71,6 +71,17 @@
         <item>Флакон</item>
         <item>Ампула</item>
         <item>Штука</item>
+    </string-array>
+    <string-array name="izmerenie_a">
+        <item>килограмм(-а)</item>
+        <item>миллиграмм(-а)</item>
+        <item>литр(-а)</item>
+        <item>миллилитр(-а)</item>
+        <item>грамм(-а)</item>
+        <item>декалитр(-а)</item>
+        <item>флакон(-а)</item>
+        <item>ампула(-ы)</item>
+        <item>штука(-и)</item>
     </string-array>
     <string-array name="izmerenie_smoll">
         <item>кг</item>

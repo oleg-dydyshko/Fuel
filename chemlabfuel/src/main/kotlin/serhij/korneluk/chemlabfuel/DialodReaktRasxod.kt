@@ -32,8 +32,10 @@ class DialodReaktRasxod : DialogFragment() {
     private var ostatok = "0,0"
     private lateinit var c: GregorianCalendar
     private var user = ""
-    private val edIzmerenia = arrayOf("килограммах", "миллиграммах", "литрах", "миллилитрах")
-    private val edIzmerenia2 = arrayOf("килограмм(-а)", "миллиграмм(-а)", "литр(-а)", "миллилитр(-а)")
+    private val edIzmerenia: Array<out String>
+        get() = ChemLabFuelApp.applicationContext().resources.getStringArray(R.array.izmerenie)
+    private val edIzmerenia2: Array<out String>
+        get() = ChemLabFuelApp.applicationContext().resources.getStringArray(R.array.izmerenie_a)
     private var jurnal = ""
     private var position = 0
     private lateinit var jur: ArrayList<ArrayList<String>>
@@ -79,7 +81,7 @@ class DialodReaktRasxod : DialogFragment() {
             binding.button1.setOnClickListener {
                 val t1 = binding.textView1e.text.toString().split("-").toTypedArray()
                 c = GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
-                val data = DialogData.getInstance(c.timeInMillis, 1, binding.textView1.text.toString(), 2)
+                val data = DialogData.getInstance(c.timeInMillis, 1, binding.textView1.text.toString())
                 data.show(childFragmentManager, "data")
             }
             binding.textViewTitle.text = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)

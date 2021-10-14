@@ -44,43 +44,43 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
     }
 
     override fun onDialogEditPosition(position: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
-        page.onDialogEditPosition(position)
+        val page = supportFragmentManager.findFragmentByTag("f" + 0) as? ChemLabFuelTab1
+        page?.onDialogEditPosition(position)
     }
 
     override fun onDialogDeliteClick(position: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
-        page.onDialogDeliteClick(position)
+        val page = supportFragmentManager.findFragmentByTag("f" + 0) as? ChemLabFuelTab1
+        page?.onDialogDeliteClick(position)
     }
 
     override fun onDialogAddPartia(groupPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-        page.onDialogAddPartia(groupPosition)
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.onDialogAddPartia(groupPosition)
     }
 
     override fun onDialogRashod(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-        page.onDialogRashod(groupPosition, childPosition)
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.onDialogRashod(groupPosition, childPosition)
     }
 
     override fun onDialogJurnal(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-        page.onDialogJurnal(groupPosition, childPosition)
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.onDialogJurnal(groupPosition, childPosition)
     }
 
     override fun onDialogEdit(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-        page.onDialogEdit(groupPosition, childPosition)
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.onDialogEdit(groupPosition, childPosition)
     }
 
     override fun onDialogRemove(groupPosition: Int, childPosition: Int) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-        page.onDialogRemove(groupPosition, childPosition)
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.onDialogRemove(groupPosition, childPosition)
     }
 
     override fun setDialogJurnal(groupposition: Int, childposition: Int, izmerenie: Int, s: String, jurnal: String, i3: Int, octatok: String) {
-        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-        page.setDialogJurnal(groupposition, childposition, izmerenie, s, jurnal, i3, octatok)
+        val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page?.setDialogJurnal(groupposition, childposition, izmerenie, s, jurnal, i3, octatok)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,14 +133,11 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
         overridePendingTransition(R.anim.alphain, R.anim.alphaout)
     }
 
-    override fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int, fragment: Int) {
-        if (fragment == 1) {
-            val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
-            page.setData(textview, year, month, dayOfMonth)
-        } else {
-            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-            page2.setData(textview, year, month, dayOfMonth)
-        }
+    override fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int) {
+        val page = supportFragmentManager.findFragmentByTag("f" + 0) as? ChemLabFuelTab1
+        page?.setData(textview, year, month, dayOfMonth)
+        val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+        page2?.setData(textview, year, month, dayOfMonth)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -184,10 +181,10 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                 editor.putInt("sort", 1)
                 editor.apply()
             }
-            val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
-            page.updateSort()
-            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-            page2.updateSort()
+            val page = supportFragmentManager.findFragmentByTag("f" + 0) as? ChemLabFuelTab1
+            page?.updateSort()
+            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+            page2?.updateSort()
         }
         if (id == R.id.sorttime) {
             val fuel = getSharedPreferences("fuel", Context.MODE_PRIVATE)
@@ -199,10 +196,10 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                 editor.putInt("sort", 2)
                 editor.apply()
             }
-            val page = supportFragmentManager.findFragmentByTag("f" + 0) as ChemLabFuelTab1
-            page.updateSort()
-            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-            page2.updateSort()
+            val page = supportFragmentManager.findFragmentByTag("f" + 0) as? ChemLabFuelTab1
+            page?.updateSort()
+            val page2 = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+            page2?.updateSort()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -238,8 +235,10 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                     editor.apply()
                     if (intent.extras?.getBoolean("reaktive", false) == true) {
                         binding.tabPager.currentItem = 1
-                        val page = supportFragmentManager.findFragmentByTag("f" + 1) as ChemLabFuelTab2
-                        page.setExpandGroup()
+                        binding.tabPager.post {
+                            val page = supportFragmentManager.findFragmentByTag("f" + 1) as? ChemLabFuelTab2
+                            page?.setExpandGroup()
+                        }
                     }
                     sendBroadcast(Intent(this@ChemLabFuel, ReceiverSetAlarm::class.java))
                 }

@@ -9,15 +9,15 @@ class ReaktiveSpisok : Comparable<ReaktiveSpisok> {
     val data: Long
     val id: Int
     val string: String
-    val ostatok: BigDecimal?
-    val minostatok: BigDecimal?
+    val ostatok: BigDecimal
+    val minostatok: BigDecimal
     val edIzmerenia: Int
     val check: Int
-    val arrayList: ArrayList<String>?
+    val arrayList: ArrayList<String>
     val userID: String
     private val fuel: SharedPreferences
 
-    constructor(context: Context, data: Long, id: Int, string: String, ostatok: BigDecimal?, minostatok: BigDecimal?, ed_izmerenia: Int, arrayList: ArrayList<String>?, userID: String) {
+    constructor(context: Context, data: Long, id: Int, string: String, ostatok: BigDecimal, minostatok: BigDecimal, ed_izmerenia: Int, arrayList: ArrayList<String>, userID: String) {
         this.data = data
         this.id = id
         this.string = string
@@ -34,11 +34,11 @@ class ReaktiveSpisok : Comparable<ReaktiveSpisok> {
         this.data = data
         this.id = id
         string = ""
-        ostatok = null
-        minostatok = null
+        ostatok = BigDecimal.ZERO
+        minostatok = BigDecimal.ZERO
         edIzmerenia = 0
         this.check = check
-        arrayList = null
+        arrayList = ArrayList<String>()
         this.userID = ""
         fuel = context.getSharedPreferences("fuel", Context.MODE_PRIVATE)
     }

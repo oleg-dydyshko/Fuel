@@ -78,7 +78,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                     val t1 = binding.textView3e.text.toString().split("-").toTypedArray()
                     GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt())
                 }
-                val data = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString(), 2)
+                val data = DialogData.getInstance(c.timeInMillis, 3, binding.textView3.text.toString())
                 data.show(childFragmentManager, "data")
             }
             binding.button8.setOnClickListener {
@@ -88,7 +88,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
                     val t1 = binding.textView8e.text.toString().split("-").toTypedArray()
                     if (t1.size == 3) GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, t1[2].toInt()) else GregorianCalendar(t1[0].toInt(), t1[1].toInt() - 1, 1)
                 }
-                val data = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString(), 2)
+                val data = DialogData.getInstance(c.timeInMillis, 8, binding.textView8.text.toString())
                 data.show(childFragmentManager, "data")
             }
             user = arguments?.getString("user", "") ?: ""

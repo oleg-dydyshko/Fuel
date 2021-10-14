@@ -1,7 +1,6 @@
 package serhij.korneluk.chemlabfuel
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -148,7 +147,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     }
 
     fun onDialogRemove(groupPosition: Int, childPosition: Int) {
-        var spisokGroupSt = spisokGroup[groupPosition].arrayList?.get(childPosition) ?: ""
+        var spisokGroupSt = spisokGroup[groupPosition].arrayList[childPosition]
         val t1 = spisokGroupSt.indexOf(" <")
         if (t1 != -1) spisokGroupSt = spisokGroupSt.substring(0, t1)
         val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(spisokGroup[groupPosition].string + " " + spisokGroupSt, groupPosition, childPosition)
@@ -175,8 +174,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
 
     private fun seash(groupPosition: Int, childPosition: Int): ArrayList<String> {
         val group = spisokGroup[groupPosition].string
-        val t1 = spisokGroup[groupPosition].arrayList?.get(childPosition)?.indexOf(".") ?: 0
-        val child = spisokGroup[groupPosition].arrayList?.get(childPosition)?.substring(0, t1) ?: ""
+        val t1 = spisokGroup[groupPosition].arrayList[childPosition].indexOf(".")
+        val child = spisokGroup[groupPosition].arrayList[childPosition].substring(0, t1)
         val arrayList = ArrayList<String>()
         var end = false
         for ((key, value) in ChemLabFuel.ReaktiveSpisok) {
@@ -324,7 +323,9 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         if (d.size == 3) g[d[0].toInt(), d[1].toInt() - 1] = d[2].toInt() else g[d[0].toInt(), d[1].toInt() - 1] = 1
                                         data05b = g.timeInMillis
                                         g.add(Calendar.MONTH, (data2.child("data06").value as Long).toInt())
-                                        val ostatok: BigDecimal = if (data2.child("data09").value is Double) BigDecimal.valueOf(data2.child("data09").value as Double) else BigDecimal.valueOf((data2.child("data09").value as Long).toDouble())
+                                        var ostatok = if (data2.child("data09").value is Double) BigDecimal.valueOf(data2.child("data09").value as Double)
+                                        else BigDecimal.valueOf((data2.child("data09").value as Long).toDouble())
+                                        ostatok = ostatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
                                         if (srokToDay < g.timeInMillis) {
                                             ostatokSum = ostatokSum.add(ostatok)
                                             g.add(Calendar.DATE, -45)
@@ -334,7 +335,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         }
                                         minostatok = if (data2.child("data10").value is Double) BigDecimal.valueOf(data2.child("data10").value as Double) else BigDecimal.valueOf((data2.child("data10").value as Long).toDouble())
                                         data08 = (data2.child("data08").value as Long).toInt()
-                                        spisokChild.add(data2.key + "." + srok + " <!---->Остаток: " + ostatok.toString().replace(".", ",") + " " + edIzmerenia[data08])
+                                        spisokChild.add(data2.key + "." + srok + " <!---->Остаток: " + ostatok.toPlainString().replace(".", ",") + " " + edIzmerenia[data08])
                                     }
                                 }
                             }
@@ -358,20 +359,22 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     }
 
     fun setExpandGroup() {
-        for (i in 0 until arrayAdapter2.groupCount) {
-            binding.listView2.expandGroup(i)
+        binding.listView2.post {
+            for (i in 0 until arrayAdapter2.groupCount) {
+                binding.listView2.expandGroup(i)
+            }
         }
     }
 
     private inner class ListAdapterReakt(myContext: Context) : BaseExpandableListAdapter() {
         private val mContext = myContext
-        private val fuel: SharedPreferences = mContext.getSharedPreferences("fuel", Context.MODE_PRIVATE)
+        private val fuel = mContext.getSharedPreferences("fuel", Context.MODE_PRIVATE)
         override fun getGroupCount(): Int {
             return spisokGroup.size
         }
 
         override fun getChildrenCount(groupPosition: Int): Int {
-            return spisokGroup[groupPosition].arrayList?.size ?: 0
+            return spisokGroup[groupPosition].arrayList.size
         }
 
         override fun getGroup(groupPosition: Int): Any {
@@ -379,7 +382,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         }
 
         override fun getChild(groupPosition: Int, childPosition: Int): Any {
-            return spisokGroup[groupPosition].arrayList?.get(childPosition) ?: ""
+            return spisokGroup[groupPosition].arrayList[childPosition]
         }
 
         override fun getGroupId(groupPosition: Int): Long {
@@ -412,9 +415,12 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                 group = root.tag as ViewHolderGroup
             }
             group.text?.textSize = fuel.getInt("fontsize", 18).toFloat()
-            var ostatok = " (Остаток: " + spisokGroup[groupPosition].ostatok.toString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + ")"
-            val compare = spisokGroup[groupPosition].ostatok?.compareTo(spisokGroup[groupPosition].minostatok)
-            if (spisokGroup[groupPosition].ostatok == BigDecimal.ZERO) ostatok = " <font color=#9a2828>Срок истёк</font>" else if (compare != null && compare <= 0) ostatok = " (<font color=#9a2828>Остаток: " + spisokGroup[groupPosition].ostatok.toString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + "</font>)"
+            var groupOstatok = spisokGroup[groupPosition].ostatok
+            groupOstatok = groupOstatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
+            var ostatok = " (Остаток: " + groupOstatok.toPlainString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + ")"
+            val compare = groupOstatok.compareTo(spisokGroup[groupPosition].minostatok)
+            if (groupOstatok == BigDecimal.ZERO) ostatok = " <font color=#9a2828>Срок истёк</font>"
+            else if (compare <= 0) ostatok = " (<font color=#9a2828>Остаток: " + groupOstatok.toPlainString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + "</font>)"
             val id = if (spisokGroup[groupPosition].userID == "") spisokGroup[groupPosition].id.toString()
             else spisokGroup[groupPosition].userID
             group.text?.text = ChemLabFuel.fromHtml(id + ". " + spisokGroup[groupPosition].string + ostatok)
@@ -436,7 +442,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                 viewHolder = root.tag as ViewHolder
             }
             viewHolder.buttonPopup?.setOnClickListener { showPopupMenu(viewHolder.buttonPopup, groupPosition, childPosition) }
-            viewHolder.text?.text = ChemLabFuel.fromHtml(spisokGroup[groupPosition].arrayList?.get(childPosition) ?: "")
+            viewHolder.text?.text = ChemLabFuel.fromHtml(spisokGroup[groupPosition].arrayList[childPosition])
             viewHolder.text?.textSize = fuel.getInt("fontsize", 18).toFloat()
             return root
         }
@@ -482,7 +488,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                     return@setOnMenuItemClickListener true
                 }
                 if (menuItem.itemId == R.id.menu_remove) {
-                    var spisokGroupSt = spisokGroup[groupPosition].arrayList?.get(childposition) ?: ""
+                    var spisokGroupSt = spisokGroup[groupPosition].arrayList[childposition]
                     val t1 = spisokGroupSt.indexOf(" <")
                     if (t1 != -1) spisokGroupSt = spisokGroupSt.substring(0, t1)
                     val confirm: DialogDeliteConfirm = DialogDeliteConfirm.getInstance(spisokGroup[groupPosition].string + " " + spisokGroupSt, groupPosition, childposition)

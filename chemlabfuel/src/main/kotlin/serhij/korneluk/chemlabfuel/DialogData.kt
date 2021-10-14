@@ -17,12 +17,11 @@ class DialogData : DialogFragment() {
     private lateinit var alert: AlertDialog
     private lateinit var builder: AlertDialog.Builder
     private var listiner: DialogDataListiner? = null
-    private var fragment = 1
     private var _binding: DialogDataBinding? = null
     private val binding get() = _binding!!
 
     internal interface DialogDataListiner {
-        fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int, fragment: Int)
+        fun setData(textview: Int, year: Int, month: Int, dayOfMonth: Int)
     }
 
     override fun onAttach(context: Context) {
@@ -46,7 +45,6 @@ class DialogData : DialogFragment() {
             _binding = DialogDataBinding.inflate(LayoutInflater.from(it))
             binding.title.text = arguments?.getString("title") ?: ""
             binding.calendarView.date = arguments?.getLong("data") ?: 0L
-            fragment = arguments?.getInt("fragment") ?: 1
             binding.today.setOnClickListener {
                 val c = Calendar.getInstance() as GregorianCalendar
                 binding.calendarView.date = c.timeInMillis
@@ -65,14 +63,14 @@ class DialogData : DialogFragment() {
             }
             val textview = arguments?.getInt("textview") ?: 0
             binding.calendarView.setOnDateChangeListener { _: CalendarView?, year: Int, month: Int, dayOfMonth: Int ->
-                listiner?.setData(textview, year, month, dayOfMonth, fragment)
+                listiner?.setData(textview, year, month, dayOfMonth)
                 dialog?.cancel()
             }
             builder = AlertDialog.Builder(it)
             builder.setView(binding.root)
             if (textview == 7 || textview == 9 || textview == 10) {
                 builder.setNeutralButton("Удалить дату") { _: DialogInterface?, _: Int ->
-                    listiner?.setData(arguments?.getInt("textview") ?: 0, 0, 0, 0, fragment)
+                    listiner?.setData(arguments?.getInt("textview") ?: 0, 0, 0, 0)
                 }
                 builder.setPositiveButton("Отмена") { dialog: DialogInterface, _: Int ->
                     dialog.cancel()
@@ -97,13 +95,12 @@ class DialogData : DialogFragment() {
     }
 
     companion object {
-        fun getInstance(data: Long, textview: Int, title: String?, fragment: Int): DialogData {
+        fun getInstance(data: Long, textview: Int, title: String?): DialogData {
             val opisanie = DialogData()
             val bundle = Bundle()
             bundle.putLong("data", data)
             bundle.putInt("textview", textview)
             bundle.putString("title", title)
-            bundle.putInt("fragment", fragment)
             opisanie.arguments = bundle
             return opisanie
         }
