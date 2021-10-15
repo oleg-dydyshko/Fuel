@@ -416,7 +416,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             }
             group.text?.textSize = fuel.getInt("fontsize", 18).toFloat()
             var groupOstatok = spisokGroup[groupPosition].ostatok
-            groupOstatok = groupOstatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
+            if (groupOstatok != BigDecimal.ZERO) groupOstatok = groupOstatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
             var ostatok = " (Остаток: " + groupOstatok.toPlainString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + ")"
             val compare = groupOstatok.compareTo(spisokGroup[groupPosition].minostatok)
             if (groupOstatok == BigDecimal.ZERO) ostatok = " <font color=#9a2828>Срок истёк</font>"
