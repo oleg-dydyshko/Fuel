@@ -109,7 +109,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val testData = ArrayList<String>()
         private val reaktiveSpisok = ArrayList<ReaktiveSpisok>()
         private val inventarnySpisok = ArrayList<InventorySpisok>()
         private var toDataAlarm = 45
@@ -128,7 +127,6 @@ class SettingsActivity : AppCompatActivity() {
             val mDatabase = FirebaseDatabase.getInstance(ChemLabFuelApp.getApp()).reference
             if (FirebaseAuth.getInstance(ChemLabFuelApp.getApp()).currentUser != null) {
                 if (ChemLabFuel.isNetworkAvailable()) {
-                    testData.clear()
                     mDatabase.child("equipments").addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             inventarnySpisok.clear()
@@ -262,16 +260,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setAlarm(c: GregorianCalendar, requestCode: Int, reaktive: Boolean) {
-            val context = ChemLabFuelApp.applicationContext()/*var testAlarm = true
-            if (!reaktive) {
-                val testDataLocal = c[Calendar.YEAR].toString() + "-" + c[Calendar.MONTH] + "-" + c[Calendar.DATE]
-                for (i in testData.indices) {
-                    if (testData[i].contains(testDataLocal)) {
-                        testAlarm = false
-                        break
-                    }
-                }
-            }*/ //if (testAlarm) {
+            val context = ChemLabFuelApp.applicationContext()
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(context, ReceiverNotification::class.java)
             intent.putExtra("reaktive", reaktive)
@@ -286,8 +275,7 @@ class SettingsActivity : AppCompatActivity() {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.timeInMillis, pIntent)
                 else -> alarmManager[AlarmManager.RTC_WAKEUP, c.timeInMillis] = pIntent
-            } //}
-            testData.add(c[Calendar.YEAR].toString() + "-" + c[Calendar.MONTH] + "-" + c[Calendar.DATE])
+            }
         }
     }
 }
