@@ -240,7 +240,7 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
                             page?.setExpandGroup()
                         }
                     }
-                    sendBroadcast(Intent(this@ChemLabFuel, ReceiverSetAlarm::class.java))
+                    SettingsActivity.runAlarm()
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {}

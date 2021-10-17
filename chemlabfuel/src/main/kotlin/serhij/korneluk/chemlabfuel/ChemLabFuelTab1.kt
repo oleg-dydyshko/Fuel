@@ -2,7 +2,6 @@ package serhij.korneluk.chemlabfuel
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Spannable
@@ -213,7 +212,6 @@ class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                         }
                         inventarnySpisok.sort()
                         arrayAdapter.notifyDataSetChanged()
-                        activity.sendBroadcast(Intent(activity, ReceiverSetAlarm::class.java))
                         progressBarTab1Listener?.onProgress(View.GONE)
                     }
 

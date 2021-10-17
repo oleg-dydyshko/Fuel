@@ -46,7 +46,5 @@ class ReceiverNotification : BroadcastReceiver() {
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(205, notification)
-        val intent = Intent(context, ReceiverSetAlarm::class.java)
-        context.sendBroadcast(intent)
     }
 }

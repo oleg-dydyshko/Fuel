@@ -230,9 +230,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedAt").setValue(g.timeInMillis)
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedBy").setValue(user)
         }
-        activity?.let {
-            it.sendBroadcast(Intent(it, ReceiverSetAlarm::class.java))
-        }
+        SettingsActivity.runAlarm()
         listiner?.updateList()
         dialog?.cancel()
     }

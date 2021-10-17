@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".ChemLabFuelApp"
@@ -43,7 +44,6 @@
                 android:value=".MainActivity" />
         </activity>
         <receiver android:name=".ReceiverNotification" />
-        <receiver android:name=".ReceiverSetAlarm" />
         <receiver
             android:name=".ReceiverBoot"
             android:exported="false">

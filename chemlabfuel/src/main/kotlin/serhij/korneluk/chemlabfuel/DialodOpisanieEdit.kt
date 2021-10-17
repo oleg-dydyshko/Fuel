@@ -232,9 +232,7 @@ class DialodOpisanieEdit : DialogFragment() {
             mDatabase.child("equipments").child(uid).child("editedAt").setValue(g.timeInMillis)
             mDatabase.child("equipments").child(uid).child("editedBy").setValue(user)
         }
-        activity?.let {
-            it.sendBroadcast(Intent(it, ReceiverSetAlarm::class.java))
-        }
+        SettingsActivity.runAlarm()
         dialog?.cancel()
     }
 
