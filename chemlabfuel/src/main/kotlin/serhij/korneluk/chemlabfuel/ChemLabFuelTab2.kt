@@ -103,7 +103,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             val id = item.itemId
             if (id == R.id.add_reakt) {
                 if (ChemLabFuel.isNetworkAvailable()) {
-                    val editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, "", "", 0)
+                    val editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, "", "", 0, 1)
                     editReakt.setListUpdateListiner(this)
                     editReakt.show(childFragmentManager, "edit")
                 } else {
@@ -122,7 +122,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     }
 
     fun onDialogAddPartia(groupPosition: Int) {
-        val editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia)
+        val arrayList = seash(groupPosition)
+        val editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia, arrayList[14].toInt())
         editReakt.setListUpdateListiner(this)
         editReakt.show(childFragmentManager, "edit")
     }
@@ -172,7 +173,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         jurnal?.updateJurnalRasxoda(position, t0, t1, t2, t3, t4, t5)
     }
 
-    private fun seash(groupPosition: Int, childPosition: Int): ArrayList<String> {
+    private fun seash(groupPosition: Int, childPosition: Int = 0): ArrayList<String> {
         val group = spisokGroup[groupPosition].string
         val t1 = spisokGroup[groupPosition].arrayList[childPosition].indexOf(".")
         val child = spisokGroup[groupPosition].arrayList[childPosition].substring(0, t1)
@@ -325,7 +326,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         g.add(Calendar.MONTH, (data2.child("data06").value as Long).toInt())
                                         var ostatok = if (data2.child("data09").value is Double) BigDecimal.valueOf(data2.child("data09").value as Double)
                                         else BigDecimal.valueOf((data2.child("data09").value as Long).toDouble())
-                                        ostatok = ostatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
+                                        ostatok = if (ostatok != BigDecimal.valueOf(0.toDouble())) ostatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
+                                        else ostatok.setScale(0, BigDecimal.ROUND_HALF_UP)
                                         if (srokToDay < g.timeInMillis) {
                                             ostatokSum = ostatokSum.add(ostatok)
                                             g.add(Calendar.DATE, -45)
@@ -461,7 +463,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             popup.setOnMenuItemClickListener { menuItem: MenuItem ->
                 popup.dismiss()
                 if (menuItem.itemId == R.id.menu_add) {
-                    val editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia)
+                    val arrayList = seash(groupPosition)
+                    val editReakt = DialodOpisanieEditReakt.getInstance(ChemLabFuel.userEdit, spisokGroup[groupPosition].string, spisokGroup[groupPosition].minostatok.toString(), spisokGroup[groupPosition].edIzmerenia, arrayList[14].toInt())
                     editReakt.setListUpdateListiner(this@ChemLabFuelTab2)
                     editReakt.show(childFragmentManager, "edit")
                     return@setOnMenuItemClickListener true

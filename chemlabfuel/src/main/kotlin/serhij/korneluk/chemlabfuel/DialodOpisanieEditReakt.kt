@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,8 +26,8 @@ class DialodOpisanieEditReakt : DialogFragment() {
     private lateinit var alert: AlertDialog
     private var user = ""
     private var title = ""
-    private var groupPosition = 0
-    private var childposition = 0
+    private var groupPosition = 1
+    private var childposition = 1
     private var edIzmerenia = 0
     private val data: Array<out String>
         get() = ChemLabFuelApp.applicationContext().resources.getStringArray(R.array.izmerenie)
@@ -95,9 +94,16 @@ class DialodOpisanieEditReakt : DialogFragment() {
             title = arguments?.getString("title", "") ?: ""
             groupPosition = arguments?.getInt("groupposition", 1) ?: 1
             childposition = arguments?.getInt("childposition", 1) ?: 1
-            val minostatok = arguments?.getString("minostatok", "") ?: ""
+            var minostatok = arguments?.getString("minostatok", "") ?: ""
             edIzmerenia = arguments?.getInt("ed_izmerenia", 0) ?: 0
+            if (edIzmerenia >= 6) {
+                val t1 = minostatok.indexOf(".")
+                if (t1 != -1)
+                    minostatok = minostatok.substring(0, t1)
+            }
             if (add) {
+                if (title != "")
+                    binding.textViewIde.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(1)?.get(18).toString())
                 binding.textViewTitle.setText(R.string.add)
                 binding.textView2e.setText(title)
                 binding.textView13e.setText(minostatok)
@@ -225,7 +231,9 @@ class DialodOpisanieEditReakt : DialogFragment() {
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(java.lang.Double.valueOf(binding.textView12e.text.toString().trim().replace(",", ".")))
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(java.lang.Double.valueOf(binding.textView13e.text.toString().trim().replace(",", ".")))
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data12").setValue(binding.textView14e.text.toString().trim())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data13").setValue(binding.textViewIde.text.toString().trim())
+        for ((key, _) in ChemLabFuel.ReaktiveSpisok[groupPosition] ?: LinkedHashMap<Int, LinkedHashMap<Int, LinkedHashMap<Int, String>>>()) {
+            mDatabase.child("reagents").child(nomerProdukta).child(key.toString()).child("data13").setValue(binding.textViewIde.text.toString().trim())
+        }
         if (!add) {
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedAt").setValue(g.timeInMillis)
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedBy").setValue(user)
@@ -294,13 +302,14 @@ class DialodOpisanieEditReakt : DialogFragment() {
             return opisanie
         }
 
-        fun getInstance(user: String?, title: String?, minostatok: String?, ed_izmerenia: Int): DialodOpisanieEditReakt {
+        fun getInstance(user: String?, title: String?, minostatok: String?, ed_izmerenia: Int, groupPosition: Int): DialodOpisanieEditReakt {
             val opisanie = DialodOpisanieEditReakt()
             val bundle = Bundle()
             bundle.putString("user", user)
             bundle.putString("title", title)
             bundle.putString("minostatok", minostatok)
             bundle.putInt("ed_izmerenia", ed_izmerenia)
+            bundle.putInt("groupposition", groupPosition)
             opisanie.arguments = bundle
             add = true
             return opisanie
