@@ -98,12 +98,10 @@ class DialodOpisanieEditReakt : DialogFragment() {
             edIzmerenia = arguments?.getInt("ed_izmerenia", 0) ?: 0
             if (edIzmerenia >= 6) {
                 val t1 = minostatok.indexOf(".")
-                if (t1 != -1)
-                    minostatok = minostatok.substring(0, t1)
+                if (t1 != -1) minostatok = minostatok.substring(0, t1)
             }
             if (add) {
-                if (title != "")
-                    binding.textViewIde.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(1)?.get(18).toString())
+                if (title != "") binding.textViewIde.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(1)?.get(18).toString())
                 binding.textViewTitle.setText(R.string.add)
                 binding.textView2e.setText(title)
                 binding.textView13e.setText(minostatok)
@@ -231,8 +229,27 @@ class DialodOpisanieEditReakt : DialogFragment() {
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(java.lang.Double.valueOf(binding.textView12e.text.toString().trim().replace(",", ".")))
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(java.lang.Double.valueOf(binding.textView13e.text.toString().trim().replace(",", ".")))
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data12").setValue(binding.textView14e.text.toString().trim())
-        for ((key, _) in ChemLabFuel.ReaktiveSpisok[groupPosition] ?: LinkedHashMap<Int, LinkedHashMap<Int, LinkedHashMap<Int, String>>>()) {
-            mDatabase.child("reagents").child(nomerProdukta).child(key.toString()).child("data13").setValue(binding.textViewIde.text.toString().trim())
+        var textViewIdeBinding = binding.textViewIde.text.toString().trim()
+        var userId = 1
+        ChemLabFuel.ReaktiveSpisok.forEach { it ->
+            it.value.forEach { map ->
+                var text18 = map.value[18] ?: ""
+                if (text18 == "") text18 = map.value[14] ?: "1"
+                val textViewIdeChaild = text18.toCharArray()
+                val (digits, _) = textViewIdeChaild.partition { it.isDigit() }
+                val userIdstring = digits.joinToString(separator = "")
+                if (userIdstring != "" && userId <= userIdstring.toInt()) userId = userIdstring.toInt()
+            }
+        }
+        userId++
+        if (textViewIdeBinding == "")
+            textViewIdeBinding = userId.toString()
+        if (add) {
+            mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data13").setValue(textViewIdeBinding)
+        } else {
+            for ((key, _) in ChemLabFuel.ReaktiveSpisok[groupPosition] ?: LinkedHashMap<Int, LinkedHashMap<Int, LinkedHashMap<Int, String>>>()) {
+                mDatabase.child("reagents").child(nomerProdukta).child(key.toString()).child("data13").setValue(textViewIdeBinding)
+            }
         }
         if (!add) {
             mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("editedAt").setValue(g.timeInMillis)

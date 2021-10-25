@@ -174,7 +174,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
     }
 
     private fun seash(groupPosition: Int, childPosition: Int = 0): ArrayList<String> {
-        val group = spisokGroup[groupPosition].string
+        val group = spisokGroup[groupPosition].id
         val t1 = spisokGroup[groupPosition].arrayList[childPosition].indexOf(".")
         val child = spisokGroup[groupPosition].arrayList[childPosition].substring(0, t1)
         val arrayList = ArrayList<String>()
@@ -185,7 +185,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                 for ((key1, value1) in value2) {
                     arrayList.add(key1, value1)
                 }
-                if (group.contains(arrayList[13]) && child.contains(arrayList[15])) {
+                if (group == arrayList[14].toInt() && child == arrayList[15]) {
                     arrayList.add(key.toString())
                     end = true
                     break
