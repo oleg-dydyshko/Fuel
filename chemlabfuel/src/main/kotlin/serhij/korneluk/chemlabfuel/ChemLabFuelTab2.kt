@@ -327,13 +327,13 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         if (d.size == 3) g[d[0].toInt(), d[1].toInt() - 1] = d[2].toInt() else g[d[0].toInt(), d[1].toInt() - 1] = 1
                                         data05b = g.timeInMillis
                                         data06 = (data2.child("data06").value as Long).toInt()
-                                        if (data06 != -1)
+                                        if (data06 != ChemLabFuel.INFINITY)
                                             g.add(Calendar.MONTH, data06)
                                         var ostatok = if (data2.child("data09").value is Double) BigDecimal.valueOf(data2.child("data09").value as Double)
                                         else BigDecimal.valueOf((data2.child("data09").value as Long).toDouble())
                                         ostatok = if (ostatok != BigDecimal.valueOf(0.toDouble())) ostatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
                                         else ostatok.setScale(0, BigDecimal.ROUND_HALF_UP)
-                                        if (data06 != -1) {
+                                        if (data06 != ChemLabFuel.INFINITY) {
                                             if (srokToDay < g.timeInMillis) {
                                                 ostatokSum = ostatokSum.add(ostatok)
                                                 g.add(Calendar.DATE, -45)

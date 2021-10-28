@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
@@ -70,6 +71,14 @@ class DialodOpisanieEditReakt : DialogFragment() {
             binding.spinner11e.adapter = ListAdapter(it, data)
             binding.textView12e.addTextChangedListener(MyTextWatcher(binding.textView12e))
             binding.textView13e.addTextChangedListener(MyTextWatcher(binding.textView13e))
+            binding.spinner9.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, itemSelected: View?, selectedItemPosition: Int, selectedId: Long) {
+                    binding.textView9e.isEnabled = selectedItemPosition != 2
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
+            }
             binding.button3.setOnClickListener {
                 val c = if (binding.textView3e.text.toString() == "") {
                     Calendar.getInstance() as GregorianCalendar
@@ -124,7 +133,13 @@ class DialodOpisanieEditReakt : DialogFragment() {
                 binding.textView6e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
                 binding.textView7e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
                 binding.textView8e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
-                binding.textView9e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6).toString())
+                val data06 = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6)?.toInt() ?: 1
+                if (data06 == ChemLabFuel.INFINITY) {
+                    binding.textView9e.setText("Бесконечно")
+                    binding.textView9e.isEnabled = false
+                } else {
+                    binding.textView9e.setText(data06.toString())
+                }
                 binding.textView10e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(7))
                 binding.spinner11e.setSelection(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(8)?.toInt() ?: 0)
                 binding.textView12e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(9).toString())
@@ -187,7 +202,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
             text9 *= 12
         }
         if (add && binding.spinner9.selectedItemPosition == 2) {
-            text9 = -1
+            text9 = ChemLabFuel.INFINITY.toLong()
         }
         if (add) {
             if (ChemLabFuel.ReaktiveSpisok.size != 0) {

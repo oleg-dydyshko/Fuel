@@ -264,6 +264,7 @@ class ChemLabFuel : AppCompatActivity(), DialogData.DialogDataListiner, DialogCo
     }
 
     companion object {
+        const val INFINITY = -1
         val users = ArrayList<ArrayList<String>>()
         val ReaktiveSpisok = LinkedHashMap<Int, LinkedHashMap<Int, LinkedHashMap<Int, String>>>()
         var userEdit = ""
