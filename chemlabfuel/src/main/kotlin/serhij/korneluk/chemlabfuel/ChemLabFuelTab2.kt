@@ -235,7 +235,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         }
         val izmerenie = resources.getStringArray(R.array.izmerenie)
         val data02 = arrayList[13]
-        val chranenie = if (arrayList[6].toInt() == -1) "Бесконечно"
+        val chranenie = if (arrayList[6].toInt() == -1) "Не ограничен"
         else arrayList[6]
         val builder = "<strong>Партия</strong><br>" + arrayList[15] + "<br><br>" + "<strong>Дата получения</strong><br>" + arrayList[1] + "<br><br>" + "<strong>Поставщик</strong><br>" + arrayList[2] + "<br><br>" + "<strong>Претензии</strong><br>" + arrayList[3] + "<br><br>" + "<strong>Квалификация</strong><br>" + arrayList[4] + "<br><br>" + "<strong>Партия</strong><br>" + arrayList[17] + "<br><br>" + "<strong>Дата изготовления</strong><br>" + arrayList[5] + "<br><br>" + "<strong>Срок хранения</strong><br>" + chranenie + "<br><br>" + "<strong>Условия хранения</strong><br>" + arrayList[7] + "<br><br>" + "<strong>Единица измерения</strong><br>" + izmerenie[arrayList[8].toInt()] + "<br><br>" + "<strong>Количество на остатке</strong><br>" + arrayList[9].replace(".", ",") + "<br><br>" + "<strong>Минимальное количество</strong><br>" + arrayList[10].replace(".", ",") + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Изменено</strong><br>" + editedString
         val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)

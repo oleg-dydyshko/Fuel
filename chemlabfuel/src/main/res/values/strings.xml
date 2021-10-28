@@ -61,6 +61,7 @@
     <string name="login_password_error">Неверный логин или пароль</string>
     <string name="nomer_reaktiva">Номер реактива</string>
     <string name="auto_id">Автоматически</string>
+    <string name="infinity">Не ограничен</string>
     <string-array name="izmerenie">
         <item>Килограмм</item>
         <item>Миллиграмм</item>
