@@ -64,7 +64,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
             val builder = AlertDialog.Builder(it)
             _binding = DialogOpisanieEditReaktBinding.inflate(LayoutInflater.from(it))
             builder.setView(binding.root)
-            val god = arrayOf("Год", "Месяц")
+            val god = arrayOf("Год", "Месяц", "Бесконечно")
             binding.textView2e.addTextChangedListener(MyTextWatcher(binding.textView2e))
             binding.spinner9.adapter = ListAdapter(it, god)
             binding.spinner11e.adapter = ListAdapter(it, data)
@@ -182,9 +182,12 @@ class DialodOpisanieEditReakt : DialogFragment() {
         val g = Calendar.getInstance() as GregorianCalendar
         var nomerProdukta = groupPosition.toString()
         var nomerPartii = childposition.toString()
-        var text9 = java.lang.Long.valueOf(binding.textView9e.text.toString().trim())
+        var text9 = binding.textView9e.text.toString().trim().toLong()
         if (add && binding.spinner9.selectedItemPosition == 0) {
             text9 *= 12
+        }
+        if (add && binding.spinner9.selectedItemPosition == 2) {
+            text9 = -1
         }
         if (add) {
             if (ChemLabFuel.ReaktiveSpisok.size != 0) {
@@ -226,8 +229,8 @@ class DialodOpisanieEditReakt : DialogFragment() {
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data06").setValue(text9)
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data07").setValue(binding.textView10e.text.toString().trim())
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data08").setValue(binding.spinner11e.selectedItemPosition.toLong())
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(java.lang.Double.valueOf(binding.textView12e.text.toString().trim().replace(",", ".")))
-        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(java.lang.Double.valueOf(binding.textView13e.text.toString().trim().replace(",", ".")))
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data09").setValue(binding.textView12e.text.toString().trim().replace(",", ".").toDouble())
+        mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data10").setValue(binding.textView13e.text.toString().trim().replace(",", ".").toDouble())
         mDatabase.child("reagents").child(nomerProdukta).child(nomerPartii).child("data12").setValue(binding.textView14e.text.toString().trim())
         var textViewIdeBinding = binding.textViewIde.text.toString().trim()
         var userId = 1

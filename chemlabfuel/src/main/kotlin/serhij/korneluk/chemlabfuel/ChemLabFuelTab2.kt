@@ -57,7 +57,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                 val childPosition = ExpandableListView.getPackedPositionChild(packedPosition)
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
                     val arrayList = seash(groupPosition, childPosition)
-                    val reakt: DialogContextMenuReakt = DialogContextMenuReakt.getInstance(groupPosition, childPosition, ChemLabFuel.ReaktiveSpisok[arrayList[14].toInt()]?.get(arrayList[15].toInt())?.get(13))
+                    val reakt = DialogContextMenuReakt.getInstance(groupPosition, childPosition, ChemLabFuel.ReaktiveSpisok[arrayList[14].toInt()]?.get(arrayList[15].toInt())?.get(13))
                     reakt.show(childFragmentManager, "reakt")
                     return@setOnItemLongClickListener true
                 }
@@ -235,7 +235,9 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         }
         val izmerenie = resources.getStringArray(R.array.izmerenie)
         val data02 = arrayList[13]
-        val builder = "<strong>Партия</strong><br>" + arrayList[15] + "<br><br>" + "<strong>Дата получения</strong><br>" + arrayList[1] + "<br><br>" + "<strong>Поставщик</strong><br>" + arrayList[2] + "<br><br>" + "<strong>Претензии</strong><br>" + arrayList[3] + "<br><br>" + "<strong>Квалификация</strong><br>" + arrayList[4] + "<br><br>" + "<strong>Партия</strong><br>" + arrayList[17] + "<br><br>" + "<strong>Дата изготовления</strong><br>" + arrayList[5] + "<br><br>" + "<strong>Срок хранения</strong><br>" + arrayList[6] + "<br><br>" + "<strong>Условия хранения</strong><br>" + arrayList[7] + "<br><br>" + "<strong>Единица измерения</strong><br>" + izmerenie[arrayList[8].toInt()] + "<br><br>" + "<strong>Количество на остатке</strong><br>" + arrayList[9].replace(".", ",") + "<br><br>" + "<strong>Минимальное количество</strong><br>" + arrayList[10].replace(".", ",") + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Изменено</strong><br>" + editedString
+        val chranenie = if (arrayList[6].toInt() == -1) "Бесконечно"
+        else arrayList[6]
+        val builder = "<strong>Партия</strong><br>" + arrayList[15] + "<br><br>" + "<strong>Дата получения</strong><br>" + arrayList[1] + "<br><br>" + "<strong>Поставщик</strong><br>" + arrayList[2] + "<br><br>" + "<strong>Претензии</strong><br>" + arrayList[3] + "<br><br>" + "<strong>Квалификация</strong><br>" + arrayList[4] + "<br><br>" + "<strong>Партия</strong><br>" + arrayList[17] + "<br><br>" + "<strong>Дата изготовления</strong><br>" + arrayList[5] + "<br><br>" + "<strong>Срок хранения</strong><br>" + chranenie + "<br><br>" + "<strong>Условия хранения</strong><br>" + arrayList[7] + "<br><br>" + "<strong>Единица измерения</strong><br>" + izmerenie[arrayList[8].toInt()] + "<br><br>" + "<strong>Количество на остатке</strong><br>" + arrayList[9].replace(".", ",") + "<br><br>" + "<strong>Минимальное количество</strong><br>" + arrayList[10].replace(".", ",") + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Изменено</strong><br>" + editedString
         val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
         opisanie.show(childFragmentManager, "opisanie")
         return false
@@ -264,6 +266,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                             var data05b: Long = 0
                             var data08 = 0
                             var data13 = ""
+                            var data06 = 0
                             for (data2 in data.children) {
                                 var srok = ""
                                 var i = 0
@@ -323,17 +326,23 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         val d = data05.split("-").toTypedArray()
                                         if (d.size == 3) g[d[0].toInt(), d[1].toInt() - 1] = d[2].toInt() else g[d[0].toInt(), d[1].toInt() - 1] = 1
                                         data05b = g.timeInMillis
-                                        g.add(Calendar.MONTH, (data2.child("data06").value as Long).toInt())
+                                        data06 = (data2.child("data06").value as Long).toInt()
+                                        if (data06 != -1)
+                                            g.add(Calendar.MONTH, data06)
                                         var ostatok = if (data2.child("data09").value is Double) BigDecimal.valueOf(data2.child("data09").value as Double)
                                         else BigDecimal.valueOf((data2.child("data09").value as Long).toDouble())
                                         ostatok = if (ostatok != BigDecimal.valueOf(0.toDouble())) ostatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
                                         else ostatok.setScale(0, BigDecimal.ROUND_HALF_UP)
-                                        if (srokToDay < g.timeInMillis) {
-                                            ostatokSum = ostatokSum.add(ostatok)
-                                            g.add(Calendar.DATE, -45)
-                                            if (srokToDay > g.timeInMillis) srok = " <font color=#9a2828>Истекает срок</font>"
+                                        if (data06 != -1) {
+                                            if (srokToDay < g.timeInMillis) {
+                                                ostatokSum = ostatokSum.add(ostatok)
+                                                g.add(Calendar.DATE, -45)
+                                                if (srokToDay > g.timeInMillis) srok = " <font color=#9a2828>Истекает срок</font>"
+                                            } else {
+                                                srok = " <font color=#9a2828>Срок истёк</font>"
+                                            }
                                         } else {
-                                            srok = " <font color=#9a2828>Срок истёк</font>"
+                                            ostatokSum = ostatokSum.add(ostatok)
                                         }
                                         minostatok = if (data2.child("data10").value is Double) BigDecimal.valueOf(data2.child("data10").value as Double) else BigDecimal.valueOf((data2.child("data10").value as Long).toDouble())
                                         data08 = (data2.child("data08").value as Long).toInt()
@@ -341,7 +350,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                     }
                                 }
                             }
-                            spisokGroup.add(ReaktiveSpisok(activity, data05b, id.toInt(), name, ostatokSum, minostatok, data08, spisokChild, data13))
+                            spisokGroup.add(ReaktiveSpisok(activity, data05b, id.toInt(), name, ostatokSum, minostatok, data08, spisokChild, data13, data06))
                             ChemLabFuel.ReaktiveSpisok[id.toInt()] = spisokN
                         }
                         spisokGroup.sort()
@@ -421,8 +430,10 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
             if (groupOstatok != BigDecimal.ZERO) groupOstatok = groupOstatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()
             var ostatok = " (Остаток: " + groupOstatok.toPlainString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + ")"
             val compare = groupOstatok.compareTo(spisokGroup[groupPosition].minostatok)
-            if (groupOstatok == BigDecimal.ZERO) ostatok = " <font color=#9a2828>Срок истёк</font>"
-            else if (compare <= 0) ostatok = " (<font color=#9a2828>Остаток: " + groupOstatok.toPlainString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + "</font>)"
+            if (spisokGroup[groupPosition].chranenie != -1) {
+                if (groupOstatok == BigDecimal.ZERO) ostatok = " <font color=#9a2828>Срок истёк</font>"
+                else if (compare <= 0) ostatok = " (<font color=#9a2828>Остаток: " + groupOstatok.toPlainString().replace(".", ",") + " " + edIzmerenia[spisokGroup[groupPosition].edIzmerenia] + "</font>)"
+            }
             val id = if (spisokGroup[groupPosition].userID == "") spisokGroup[groupPosition].id.toString()
             else spisokGroup[groupPosition].userID
             group.text?.text = ChemLabFuel.fromHtml(id + ". " + spisokGroup[groupPosition].string + ostatok)
