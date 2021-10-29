@@ -72,11 +72,13 @@ class DialodOpisanieEditReakt : DialogFragment() {
             binding.textView13e.addTextChangedListener(MyTextWatcher(binding.textView13e))
             binding.checkBox.setOnCheckedChangeListener { _, isChecked: Boolean ->
                 if (isChecked) {
-                    binding.textView9e.isEnabled = false
-                    binding.spinner9.isEnabled = false
+                    binding.textView9e.setText(ChemLabFuel.INFINITY.toString())
+                    binding.textView9e.visibility = View.GONE
+                    binding.spinner9.visibility = View.GONE
                 } else {
-                    binding.textView9e.isEnabled = true
-                    binding.spinner9.isEnabled = true
+                    binding.textView9e.setText("1")
+                    binding.textView9e.visibility = View.VISIBLE
+                    binding.spinner9.visibility = View.VISIBLE
                 }
             }
             binding.button3.setOnClickListener {
@@ -135,8 +137,8 @@ class DialodOpisanieEditReakt : DialogFragment() {
                 binding.textView8e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
                 val data06 = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6)?.toInt() ?: 1
                 if (data06 == ChemLabFuel.INFINITY) {
-                    binding.textView9e.setText("-1")
-                    binding.textView9e.isEnabled = false
+                    binding.textView9e.setText(ChemLabFuel.INFINITY.toString())
+                    binding.textView9e.visibility = View.GONE
                     binding.checkBox.isChecked = true
                 } else {
                     binding.textView9e.setText(data06.toString())
@@ -199,7 +201,7 @@ class DialodOpisanieEditReakt : DialogFragment() {
         var nomerProdukta = groupPosition.toString()
         var nomerPartii = childposition.toString()
         var text9 = binding.textView9e.text.toString().trim().toLong()
-        if (add && binding.spinner9.selectedItemPosition == 0) {
+        if (binding.spinner9.selectedItemPosition == 0) {
             text9 *= 12
         }
         if (binding.checkBox.isChecked) {
