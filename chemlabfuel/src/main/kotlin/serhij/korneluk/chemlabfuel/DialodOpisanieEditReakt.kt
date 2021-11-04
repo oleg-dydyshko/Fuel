@@ -127,7 +127,6 @@ class DialodOpisanieEditReakt : DialogFragment() {
                 binding.spinner11e.setSelection(edIzmerenia)
             } else {
                 binding.textView12.setText(R.string.kol_na_ost)
-                binding.spinner9.visibility = View.GONE
                 binding.textViewTitle.text = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13)
                 binding.textView2e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(13))
                 binding.textView3e.text = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(1)
@@ -135,7 +134,12 @@ class DialodOpisanieEditReakt : DialogFragment() {
                 binding.textView6e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(3))
                 binding.textView7e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(4))
                 binding.textView8e.setText(ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(5))
-                val data06 = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6)?.toInt() ?: 1
+                var data06 = ChemLabFuel.ReaktiveSpisok[groupPosition]?.get(childposition)?.get(6)?.toInt() ?: 1
+                if (data06 % 12 == 0) {
+                    data06 /= 12
+                } else {
+                    binding.spinner9.setSelection(1)
+                }
                 if (data06 == ChemLabFuel.INFINITY) {
                     binding.textView9e.setText(ChemLabFuel.INFINITY.toString())
                     binding.textView9e.visibility = View.GONE
