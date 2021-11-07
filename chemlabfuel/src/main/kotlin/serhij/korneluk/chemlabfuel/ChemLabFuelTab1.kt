@@ -179,8 +179,8 @@ class ChemLabFuelTab1 : Fragment(), AdapterView.OnItemClickListener, AdapterView
                 }
             }
             val data02 = inventarnySpisok[position].data02
-            val builder = "<strong>Марка, тип</strong><br>" + inventarnySpisok[position].data03 + "<br><br>" + "<strong>Заводской номер (инв. номер)</strong><br>" + inventarnySpisok[position].data04 + "<br><br>" + "<strong>Год выпуска (ввода в эксплуатацию)</strong><br>" + inventarnySpisok[position].data05 + "<br><br>" + "<strong>Периодичность метролог. аттестации, поверки, калибровки, мес.</strong><br>" + inventarnySpisok[position].data06 + "<br><br>" + "<strong>Дата последней аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data07 + "<br><br>" + "<strong>Дата следующей аттестации, поверки, калибровки</strong><br>" + inventarnySpisok[position].data08 + "<br><br>" + "<strong>Дата консервации</strong><br>" + inventarnySpisok[position].data09 + "<br><br>" + "<strong>Дата расконсервации</strong><br>" + inventarnySpisok[position].data10 + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Примечания</strong><br>" + inventarnySpisok[position].data12 + editedString
-            val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
+            val builder = getString(R.string.opisanie1, inventarnySpisok[position].data03, inventarnySpisok[position].data04, inventarnySpisok[position].data05, inventarnySpisok[position].data06, inventarnySpisok[position].data07, inventarnySpisok[position].data08, inventarnySpisok[position].data09, inventarnySpisok[position].data10, fnG, lnG, inventarnySpisok[position].data12, editedString)
+            val opisanie = DialodOpisanie.getInstance(data02, builder)
             opisanie.show(childFragmentManager, "opisanie")
         }
     }

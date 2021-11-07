@@ -95,5 +95,7 @@
         <item>амп.</item>
         <item>шт.</item>
     </string-array>
+    <string name="opisanie1"><![CDATA[<strong>Марка, тип</strong><br>%1$s<br><br><strong>Заводской номер (инв. номер)</strong><br>%2$s<br><br><strong>Год выпуска (ввода в эксплуатацию)</strong><br>%3$s<br><br><strong>Периодичность метролог. аттестации, поверки, калибровки, мес.</strong><br>%4$s<br><br><strong>Дата последней аттестации, поверки, калибровки</strong><br>%5$s<br><br><strong>Дата следующей аттестации, поверки, калибровки</strong><br>%6$s<br><br><strong>Дата консервации</strong><br>%7$s<br><br><strong>Дата расконсервации</strong><br>%8$s<br><br><strong>Ответственный</strong><br>%9$s %10$s<br><br><strong>Примечания</strong><br>%11$s%12$s]]></string>
+    <string name="opisanie2"><![CDATA[<strong>Партия</strong><br>%1$s<br><br><strong>Дата получения</strong><br>%2$s<br><br><strong>Поставщик</strong><br>%3$s<br><br><strong>Претензии</strong><br>%4$s<br><br><strong>Квалификация</strong><br>%5$s<br><br><strong>Номер партии</strong><br>%6$s<br><br><strong>Дата изготовления</strong><br>%7$s<br><br><strong>Срок хранения</strong><br>%8$s<br><br><strong>Условия хранения</strong><br>%9$s<br><br><strong>Единица измерения</strong><br>%10$s<br><br><strong>Количество на остатке</strong><br>%11$s<br><br><strong>Минимальное количество</strong><br>%12$s<br><br><strong>Ответственный</strong><br>%13$s %14$s<br><br><strong>Изменено</strong><br>%15$s]]></string>
     <!--%1$s is a string and %2$d is a decimal number-->
 </resources>

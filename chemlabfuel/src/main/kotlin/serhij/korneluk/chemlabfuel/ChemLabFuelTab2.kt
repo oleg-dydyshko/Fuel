@@ -237,8 +237,8 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
         val data02 = arrayList[13]
         val chranenie = if (arrayList[6].toInt() == -1) getString(R.string.infinity)
         else arrayList[6]
-        val builder = "<strong>Партия</strong><br>" + arrayList[15] + "<br><br>" + "<strong>Дата получения</strong><br>" + arrayList[1] + "<br><br>" + "<strong>Поставщик</strong><br>" + arrayList[2] + "<br><br>" + "<strong>Претензии</strong><br>" + arrayList[3] + "<br><br>" + "<strong>Квалификация</strong><br>" + arrayList[4] + "<br><br>" + "<strong>Номер партии</strong><br>" + arrayList[17] + "<br><br>" + "<strong>Дата изготовления</strong><br>" + arrayList[5] + "<br><br>" + "<strong>Срок хранения</strong><br>" + chranenie + "<br><br>" + "<strong>Условия хранения</strong><br>" + arrayList[7] + "<br><br>" + "<strong>Единица измерения</strong><br>" + izmerenie[arrayList[8].toInt()] + "<br><br>" + "<strong>Количество на остатке</strong><br>" + arrayList[9].replace(".", ",") + "<br><br>" + "<strong>Минимальное количество</strong><br>" + arrayList[10].replace(".", ",") + "<br><br>" + "<strong>Ответственный</strong><br>" + fnG + " " + lnG + "<br><br>" + "<strong>Изменено</strong><br>" + editedString
-        val opisanie: DialodOpisanie = DialodOpisanie.getInstance(data02, builder)
+        val builder = getString(R.string.opisanie2, arrayList[15], arrayList[1], arrayList[2], arrayList[3], arrayList[4], arrayList[17], arrayList[5], chranenie, arrayList[7], izmerenie[arrayList[8].toInt()], arrayList[9].replace(".", ","), arrayList[10].replace(".", ","), fnG, lnG, editedString)
+        val opisanie = DialodOpisanie.getInstance(data02, builder)
         opisanie.show(childFragmentManager, "opisanie")
         return false
     }
@@ -327,8 +327,7 @@ class ChemLabFuelTab2 : Fragment(), ExpandableListView.OnChildClickListener, Dia
                                         if (d.size == 3) g[d[0].toInt(), d[1].toInt() - 1] = d[2].toInt() else g[d[0].toInt(), d[1].toInt() - 1] = 1
                                         data05b = g.timeInMillis
                                         data06 = (data2.child("data06").value as Long).toInt()
-                                        if (data06 != ChemLabFuel.INFINITY)
-                                            g.add(Calendar.MONTH, data06)
+                                        if (data06 != ChemLabFuel.INFINITY) g.add(Calendar.MONTH, data06)
                                         var ostatok = if (data2.child("data09").value is Double) BigDecimal.valueOf(data2.child("data09").value as Double)
                                         else BigDecimal.valueOf((data2.child("data09").value as Long).toDouble())
                                         ostatok = if (ostatok != BigDecimal.valueOf(0.toDouble())) ostatok.setScale(5, BigDecimal.ROUND_HALF_UP).stripTrailingZeros()

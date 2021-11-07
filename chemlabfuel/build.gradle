@@ -7,11 +7,11 @@ android {
     buildToolsVersion '31.0.0'
     defaultConfig {
         applicationId "serhij.korneluk.chemlabfuel"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 31
         multiDexEnabled true
-        versionCode 49
-        versionName "1.5.1"
+        versionCode 50
+        versionName "1.5.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -53,11 +53,11 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'com.google.firebase:firebase-core:19.0.2'
+    implementation 'com.google.firebase:firebase-core:20.0.0'
     implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-database:20.0.2'
     implementation 'com.google.code.gson:gson:2.8.8'
-    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.multidex:multidex:2.0.1"
 }
